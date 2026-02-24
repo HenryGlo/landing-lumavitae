@@ -18,10 +18,10 @@
       --rose-pale: #F5D5D8;
       --rose-bg: #F2BFC4;
       --rose-wash: #FAE8EA;
-      --text-dark: #2D2426;
+      --text-dark: #3D2E30;
       --text-cream: #FAF3EB;
-      --text-rose: #C9959A;
-      --text-rose-dark: #B8888D;
+      --text-rose: #A8777D;
+      --text-rose-dark: #8E6268;
       --font-brand: 'Quicksand', sans-serif;
       --font-body: 'Cormorant Garamond', serif;
       --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -127,7 +127,7 @@
       opacity: 0; animation: fadeIn 1.2s var(--ease-out-expo) 0.3s forwards;
     }
     .hero-tag {
-      font-family: var(--font-brand); font-size: 0.82rem; font-weight: 300;
+      font-family: var(--font-brand); font-size: 0.82rem; font-weight: 400;
       letter-spacing: 0.15em; color: var(--text-rose-dark);
     }
     .hero-title {
@@ -140,7 +140,7 @@
     .hero-title .dot { color: var(--rose); }
     .hero-subtitle {
       font-family: var(--font-body); font-size: 1.3rem; font-weight: 300;
-      font-style: italic; color: var(--text-rose-dark); margin-top: 1.5rem;
+      font-style: italic; color: var(--text-dark); margin-top: 1.5rem; opacity: 0.7;
       letter-spacing: 0.02em;
       opacity: 0; transform: translateY(15px);
       animation: fadeUp 1.2s var(--ease-out-expo) 1s forwards;
@@ -166,7 +166,7 @@
     /* ─── COMMON ─── */
     section { padding: 7rem 3rem; }
     .section-label {
-      font-family: var(--font-brand); font-size: 0.68rem; font-weight: 500;
+      font-family: var(--font-brand); font-size: 0.7rem; font-weight: 600;
       letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1.5rem;
     }
     .section-title {
@@ -200,8 +200,8 @@
     }
     .philosophy-quote strong { font-weight: 500; }
     .philosophy-sub {
-      font-family: var(--font-brand); font-size: 0.82rem; font-weight: 300;
-      letter-spacing: 0.1em; color: var(--cream); opacity: 0.7; margin-top: 1.8rem;
+      font-family: var(--font-brand); font-size: 0.82rem; font-weight: 400;
+      letter-spacing: 0.1em; color: var(--cream); opacity: 0.8; margin-top: 1.8rem;
     }
 
     /* ─── ABOUT ─── */
@@ -225,7 +225,7 @@
     .about-text { padding: 2rem 0; }
     .about-text .section-label { color: var(--text-rose); }
     .about-text .section-title { color: var(--text-dark); margin-bottom: 1.5rem; }
-    .about-text .section-text { color: #5a4a4d; margin-bottom: 2rem; }
+    .about-text .section-text { color: #4D3A3D; margin-bottom: 2rem; }
     .wavy-line { margin: 1.5rem 0; }
     .wavy-line svg { width: 60px; height: auto; }
     .btn-outline {
@@ -256,7 +256,7 @@
     .class-body { padding: 2rem 2rem 2.2rem; }
     .class-number {
       font-family: var(--font-brand); font-size: 0.68rem; font-weight: 500;
-      letter-spacing: 0.15em; color: var(--rose-light); margin-bottom: 1rem;
+      letter-spacing: 0.15em; color: var(--rose); margin-bottom: 1rem;
     }
     .class-name {
       font-family: var(--font-brand); font-size: 1.35rem; font-weight: 400;
@@ -264,7 +264,7 @@
     }
     .class-desc {
       font-family: var(--font-body); font-size: 1rem; font-weight: 300;
-      line-height: 1.7; color: #6a5a5d; margin-bottom: 1.5rem;
+      line-height: 1.7; color: #5A474A; margin-bottom: 1.5rem;
     }
     .class-tags { display: flex; gap: 0.8rem; }
     .class-tag {
@@ -290,11 +290,11 @@
     }
     .studio-text .section-label { color: var(--text-rose); }
     .studio-text .section-title { color: var(--text-dark); margin-bottom: 1.5rem; }
-    .studio-text .section-text { color: #5a4a4d; margin-bottom: 2.5rem; }
+    .studio-text .section-text { color: #4D3A3D; margin-bottom: 2.5rem; }
     .studio-features { display: flex; flex-direction: column; gap: 1rem; }
     .studio-feat {
       display: flex; align-items: center; gap: 0.9rem;
-      font-family: var(--font-brand); font-size: 0.84rem; font-weight: 400; color: #5a4a4d;
+      font-family: var(--font-brand); font-size: 0.84rem; font-weight: 400; color: #4D3A3D;
     }
     .studio-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--rose); flex-shrink: 0; }
 
@@ -318,7 +318,7 @@
     }
     .product-desc {
       font-family: var(--font-body); font-size: 0.98rem; font-weight: 300;
-      color: #6a5a5d; line-height: 1.6;
+      color: #5A474A; line-height: 1.6;
     }
 
     /* ─── EXPERIENCE / QUOTE ─── */
@@ -334,7 +334,7 @@
     .experience-icon svg { height: 42px; width: auto; opacity: 0.5; }
     .experience-quote {
       font-family: var(--font-body); font-size: clamp(1.15rem, 1.8vw, 1.5rem);
-      font-weight: 300; font-style: italic; line-height: 1.8; color: #5a4a4d;
+      font-weight: 300; font-style: italic; line-height: 1.8; color: #4D3A3D;
       max-width: 400px;
     }
     .experience-img { height: 100%; min-height: 450px; overflow: hidden; position: relative; }
@@ -358,14 +358,14 @@
       background: rgba(219, 168, 173, 0.85);
     }
     .cta-content { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
-    .cta .section-label { color: rgba(250,243,235,0.6); }
+    .cta .section-label { color: rgba(250,243,235,0.75); }
     .cta-title {
       font-family: var(--font-brand); font-size: clamp(2rem, 3.8vw, 3rem);
       font-weight: 300; line-height: 1.25; margin-bottom: 1.2rem;
     }
     .cta-text {
       font-family: var(--font-body); font-size: 1.2rem; font-weight: 300;
-      font-style: italic; line-height: 1.7; opacity: 0.9; margin-bottom: 2.5rem;
+      font-style: italic; line-height: 1.7; opacity: 0.95; margin-bottom: 2.5rem;
     }
     .btn-light {
       display: inline-block; font-family: var(--font-brand); font-size: 0.78rem;
@@ -382,11 +382,11 @@
     .contact-info .section-title { color: var(--text-dark); margin-bottom: 2rem; }
     .contact-detail { margin-bottom: 1.3rem; }
     .contact-detail-label {
-      font-family: var(--font-brand); font-size: 0.7rem; font-weight: 500;
+      font-family: var(--font-brand); font-size: 0.7rem; font-weight: 600;
       letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-rose); margin-bottom: 0.3rem;
     }
     .contact-detail-value {
-      font-family: var(--font-body); font-size: 1.05rem; font-weight: 300; color: #5a4a4d;
+      font-family: var(--font-body); font-size: 1.05rem; font-weight: 300; color: #4D3A3D;
     }
     .contact-detail-value a { transition: color 0.3s; }
     .contact-detail-value a:hover { color: var(--rose); }
