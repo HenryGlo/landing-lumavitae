@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 32" fill="none">
+  <!-- Luma Vitae — Wordmark -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400&amp;display=swap');
+    .brand { font-family: 'Quicksand', sans-serif; font-size: 22px; font-weight: 400; letter-spacing: 0.02em; fill: currentColor; }
+    .dot { fill: #DBA8AD; }
+  </style>
+  <text x="0" y="23" class="brand">luma vitae<tspan class="dot">.</tspan></text>
+</svg>

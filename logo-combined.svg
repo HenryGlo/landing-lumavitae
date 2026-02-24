@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 36" fill="none">
+  <!-- Luma Vitae — Combined Logo (Icon + Wordmark) -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400&amp;display=swap');
+    .brand { font-family: 'Quicksand', sans-serif; font-size: 22px; font-weight: 400; letter-spacing: 0.02em; fill: currentColor; }
+    .dot { fill: #DBA8AD; }
+  </style>
+  <!-- Icon scaled to ~36px -->
+  <g stroke="currentColor" stroke-width="1.3" fill="none" transform="translate(0,0) scale(0.5625)">
+    <path d="M32,30 C26,26 23,17 32,6 C41,17 38,26 32,30Z"/>
+    <path d="M34,32 C38,26 47,23 58,32 C47,41 38,38 34,32Z"/>
+    <path d="M32,34 C38,38 41,47 32,58 C23,47 26,38 32,34Z"/>
+    <path d="M30,32 C26,38 17,41 6,32 C17,23 26,26 30,32Z"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="46" y="25" class="brand">luma vitae<tspan class="dot">.</tspan></text>
+</svg>

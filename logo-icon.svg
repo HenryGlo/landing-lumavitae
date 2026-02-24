@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Luma Vitae — Four-Petal Lotus Icon -->
+  <g stroke="currentColor" stroke-width="1.3" fill="none">
+    <!-- Top petal -->
+    <path d="M32,30 C26,26 23,17 32,6 C41,17 38,26 32,30Z"/>
+    <!-- Right petal -->
+    <path d="M34,32 C38,26 47,23 58,32 C47,41 38,38 34,32Z"/>
+    <!-- Bottom petal -->
+    <path d="M32,34 C38,38 41,47 32,58 C23,47 26,38 32,34Z"/>
+    <!-- Left petal -->
+    <path d="M30,32 C26,38 17,41 6,32 C17,23 26,26 30,32Z"/>
+  </g>
+</svg>
