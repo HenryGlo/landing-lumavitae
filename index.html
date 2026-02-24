@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <style>
     :root {
       --cream: #FAF3EB;
@@ -412,17 +413,15 @@
     .contact-map-area {
       border-radius: 20px; overflow: hidden; position: relative; min-height: 380px;
     }
-    .contact-map-area img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.2) brightness(0.95); }
     .contact-map-area::after {
       content: ''; position: absolute; inset: 0;
-      background: rgba(242,191,196,0.2); pointer-events: none;
+      background: rgba(242,191,196,0.12); pointer-events: none; z-index: 400;
     }
-    .map-pin {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      display: flex; flex-direction: column; align-items: center; gap: 0.4rem; z-index: 1;
+    .contact-map-area .leaflet-control-attribution { font-size: 0.55rem; opacity: 0.6; }
+    .contact-map-area .leaflet-control-zoom a {
+      background: var(--cream) !important; color: var(--text-dark) !important;
+      border-color: var(--rose-light) !important;
     }
-    .map-pin svg { width: 36px; height: 36px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15)); }
-    .map-pin span { font-family: var(--font-brand); font-size: 0.75rem; font-weight: 500; color: var(--text-dark); background: rgba(250,243,235,0.9); padding: 0.3rem 0.8rem; border-radius: 100px; }
 
     /* ─── FOOTER ─── */
     footer {
@@ -725,11 +724,7 @@
       </div>
     </div>
     <div class="contact-map-area rv rv-d1">
-      <img src="https://images.unsplash.com/photo-1524813686514-a57563d77965?w=800&q=80" alt="Panamá City" loading="lazy">
-      <div class="map-pin">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#DBA8AD"/><circle cx="12" cy="9" r="2.5" fill="#FAF3EB"/></svg>
-        <span>Luma Vitae</span>
-      </div>
+      <div id="map" style="width:100%;height:100%;min-height:380px;"></div>
     </div>
   </section>
 
@@ -798,6 +793,25 @@
         if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
+  </script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    const map = L.map('map', { scrollWheelZoom: false, zoomControl: true }).setView([8.9824, -79.5199], 15);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: 'abcd', maxZoom: 19
+    }).addTo(map);
+    const pin = L.divIcon({
+      className: 'luma-marker',
+      html: '<div style="display:flex;flex-direction:column;align-items:center"><svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#C4868C"/><circle cx="12" cy="9" r="2.5" fill="#FAF3EB"/></svg><span style="font-family:Quicksand,sans-serif;font-size:0.7rem;font-weight:500;color:#3D2E30;background:rgba(250,243,235,0.92);padding:0.25rem 0.7rem;border-radius:100px;margin-top:2px;white-space:nowrap">Luma Vitae</span></div>',
+      iconSize: [100, 60], iconAnchor: [50, 48]
+    });
+    L.marker([8.9824, -79.5199], { icon: pin }).addTo(map);
+    /* Fix Leaflet rendering when map scrolls into view */
+    const mapObs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { map.invalidateSize(); mapObs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    mapObs.observe(document.getElementById('map'));
   </script>
 </body>
 </html>
