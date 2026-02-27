@@ -106,7 +106,7 @@
 
     /* ─── NAV ─── */
     nav {
-      position: fixed; top: 28px; left: 0; right: 0; z-index: 100;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       padding: 1.5rem 3rem;
       display: flex; justify-content: space-between; align-items: center;
       background: rgba(250, 243, 235, 0.7);
@@ -474,7 +474,6 @@
       position: fixed; inset: 0; background: var(--cream); z-index: 99;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.8rem;
       opacity: 0; pointer-events: none; transition: opacity 0.4s;
-      padding-top: 28px;
     }
     .mobile-menu.open { opacity: 1; pointer-events: all; }
     .mobile-menu a {
@@ -554,8 +553,6 @@
 <body>
 
   <!-- PROPOSAL BANNER -->
-  <div style="position:fixed;top:0;left:0;right:0;z-index:200;background:#B8AFA8;color:#FAF3EB;text-align:center;padding:0.5rem;font-family:'Quicksand',sans-serif;font-size:0.75rem;letter-spacing:0.1em;">PROPUESTA A: WARM STONE</div>
-
   <!-- NAV -->
   <nav id="nav">
     <a href="#" class="nav-brand">
