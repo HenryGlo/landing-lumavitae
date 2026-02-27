@@ -4,6 +4,7 @@
 **Name:** Luma Vitae (stylized lowercase: "luma vitae.")
 **Full Name:** Luma Vitae
 **Studio Name:** Luma Pilates Studio
+**Domain:** pilateslumavitae.com
 **Location:** Panama City, Panama
 **Language:** Spanish (primary), English (secondary)
 **Tagline:** [pilates] [solace] [you]
@@ -70,5 +71,13 @@ Luma is a female-focused luxury pilates studio. The brand embodies quiet feminin
 - No build tools required — vanilla HTML/CSS/JS
 - Language toggle ES/EN via JavaScript data attributes
 - Google Fonts: Quicksand, Cormorant Garamond
+- Leaflet.js with CartoDB Positron tiles for interactive map
 - Responsive: mobile-first design
 - Smooth scroll, intersection observer animations
+
+## Deployment
+- **Domain:** pilateslumavitae.com
+- **Hosted via:** ~/dev/infra (Cloudflare Tunnel → Caddy file_server)
+- **Site files:** ~/dev/infra/sites/luma/public/
+- **Deploy:** Copy files to infra, commit, push, run `./scripts/deploy-remote.sh`
+- **DNS:** Cloudflare CNAME → Cloudflare Tunnel
