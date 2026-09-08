@@ -33,6 +33,67 @@
   <!-- Canonical -->
   <link rel="canonical" href="https://pilateslumavitae.com/">
 
+  <!-- ANALYTICS -->
+  <script>
+    /* GA4 with Consent Mode v2.
+
+       The defaults are set here, inline and before gtag.js loads, so the tag
+       starts denied: it sends cookieless pings that GA4 can still model, and
+       nothing is stored on the visitor's device until someone accepts. That
+       also means no returning-visitor data for now.
+
+       There is no cookie banner on the site yet. When there is one, have it
+       call lumaConsent(true) on accept and lumaConsent(false) on reject. */
+    var GA4_ID = 'G-4TCLC0SZXL';
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied',
+      functionality_storage: 'granted',
+      security_storage: 'granted',
+      wait_for_update: 500
+    });
+
+    (function () {
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA4_ID);
+      document.head.appendChild(s);
+    })();
+
+    gtag('js', new Date());
+    gtag('config', GA4_ID);
+
+    /* Single entry point for events. The site is bilingual and the toggle
+       swaps copy in place without changing the URL, so the language rides
+       along on every event: without it ES and EN traffic are one blur. */
+    function lumaTrack(name, params) {
+      var p = params || {};
+      p.idioma_sitio = document.documentElement.lang || 'es';
+      try { gtag('event', name, p); } catch (e) {}
+    }
+
+    /* For a future cookie banner. Restoring the stored answer on every load
+       matters: someone who accepted last visit never sees the banner again,
+       so nothing would call this and they would stay denied forever. */
+    function lumaConsent(ok) {
+      gtag('consent', 'update', {
+        ad_storage: ok ? 'granted' : 'denied',
+        ad_user_data: ok ? 'granted' : 'denied',
+        ad_personalization: ok ? 'granted' : 'denied',
+        analytics_storage: ok ? 'granted' : 'denied'
+      });
+      try { localStorage.setItem('luma-consent', ok ? 'si' : 'no'); } catch (e) {}
+    }
+
+    try { if (localStorage.getItem('luma-consent') === 'si') lumaConsent(true); } catch (e) {}
+  </script>
+
   <link rel="icon" type="image/svg+xml" href="images/brand/favicon.svg">
   <link rel="apple-touch-icon" href="images/brand/apple-touch-icon.png">
   <!-- Preload hero LCP image -->
@@ -1129,8 +1190,51 @@
         const t = el.getAttribute('data-' + lang);
         if (t) el.innerHTML = t;
       });
+      lumaTrack('cambio_idioma', { idioma_elegido: lang });
     }
     document.getElementById('langToggle').addEventListener('click', toggleLang);
+
+    /* Analytics Events
+       One delegated listener instead of wiring each link: the social icons
+       are SVGs, so the click lands on a child node and closest() is what
+       actually finds the link. Every one of these leaves the site, so
+       without this there is no record that they happened. */
+    document.addEventListener('click', e => {
+      const a = e.target.closest && e.target.closest('a[href]');
+      if (!a) return;
+      const href = a.getAttribute('href') || '';
+
+      /* Contact intents. All three are the same thing for the studio —
+         someone reaching out — so they share the GA4 recommended event and
+         separate by channel. */
+      if (href.startsWith('https://wa.me')) {
+        lumaTrack('generate_lead', { metodo: 'whatsapp', origen: a.classList.contains('btn-light') ? 'cta' : 'footer' });
+      } else if (href.startsWith('mailto:')) {
+        lumaTrack('generate_lead', { metodo: 'correo' });
+      } else if (href.startsWith('tel:')) {
+        lumaTrack('generate_lead', { metodo: 'telefono' });
+      } else if (href.includes('google.com/maps') || href.includes('maps.app.goo.gl')) {
+        lumaTrack('ver_ubicacion', { metodo: 'google_maps' });
+      } else if (href.includes('waze.com')) {
+        lumaTrack('ver_ubicacion', { metodo: 'waze' });
+      } else if (href.includes('instagram.com')) {
+        lumaTrack('clic_red_social', { red: 'instagram' });
+      } else if (href.includes('tiktok.com')) {
+        lumaTrack('clic_red_social', { red: 'tiktok' });
+      }
+    });
+
+    /* Prices reached: the CTAs only scroll, so a click on them says nothing
+       about whether the plans were actually seen. Fires once. */
+    const planes = document.getElementById('planes');
+    if (planes) {
+      const obsPlanes = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { lumaTrack('ver_planes'); obsPlanes.disconnect(); }
+        });
+      }, { threshold: 0, rootMargin: '0px 0px -25% 0px' });
+      obsPlanes.observe(planes);
+    }
 
     /* Scroll Nav */
     window.addEventListener('scroll', () => {
