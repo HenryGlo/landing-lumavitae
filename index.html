@@ -1120,7 +1120,7 @@
       <p class="cta-text rv rv-d2" data-es="Reserva tu primera clase y descubre lo que se siente cuando la fuerza nace del control." data-en="Book your first class and discover what it feels like when strength comes from control.">Reserva tu primera clase y descubre lo que se siente cuando la fuerza nace del control.</p>
       <div class="cta-actions rv rv-d3">
         <a href="#planes" class="btn-cream" data-es="ver paquetes" data-en="see packages">ver paquetes</a>
-        <a href="https://wa.me/50765753861" class="btn-light" target="_blank" rel="noopener" data-es="reservar clase" data-en="book a class">reservar clase</a>
+        <a href="https://pilates-luma-vitae.perfectflow.cloud/es/agendar" class="btn-light" target="_blank" rel="noopener" data-href-es="https://pilates-luma-vitae.perfectflow.cloud/es/agendar" data-href-en="https://pilates-luma-vitae.perfectflow.cloud/en/agendar" data-es="reservar clase" data-en="book a class">reservar clase</a>
       </div>
     </div>
   </section>
@@ -1190,6 +1190,12 @@
         const t = el.getAttribute('data-' + lang);
         if (t) el.innerHTML = t;
       });
+      /* The booking system has its own ES and EN pages: sending an English
+         visitor to the Spanish one loses her at the last step. */
+      document.querySelectorAll('[data-href-es]').forEach(el => {
+        const h = el.getAttribute('data-href-' + lang);
+        if (h) el.href = h;
+      });
       lumaTrack('cambio_idioma', { idioma_elegido: lang });
     }
     document.getElementById('langToggle').addEventListener('click', toggleLang);
@@ -1207,7 +1213,9 @@
       /* Contact intents. All three are the same thing for the studio —
          someone reaching out — so they share the GA4 recommended event and
          separate by channel. */
-      if (href.startsWith('https://wa.me')) {
+      if (href.includes('perfectflow.cloud')) {
+        lumaTrack('generate_lead', { metodo: 'agenda_online' });
+      } else if (href.startsWith('https://wa.me')) {
         lumaTrack('generate_lead', { metodo: 'whatsapp', origen: a.classList.contains('btn-light') ? 'cta' : 'footer' });
       } else if (href.startsWith('mailto:')) {
         lumaTrack('generate_lead', { metodo: 'correo' });
