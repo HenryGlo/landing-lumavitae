@@ -249,6 +249,19 @@
       position: absolute; width: 1px; height: 1px; overflow: hidden;
       clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
     }
+    /* Dos acciones en el hero: reservar es la principal y ver paquetes queda
+       como alternativa para quien todavia no decide. */
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
+    .btn-light-hero {
+      display: inline-block; font-family: var(--font-brand); font-size: 0.8rem;
+      font-weight: 600; letter-spacing: 0.1em; text-transform: lowercase;
+      padding: 1rem 2.4rem; border-radius: 100px;
+      background: rgba(255,255,255,0.14); color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.6);
+      backdrop-filter: blur(6px);
+      transition: all 0.4s var(--ease-out-expo);
+    }
+    .btn-light-hero:hover { background: #fff; color: var(--text-dark); border-color: #fff; }
     .hero-cta {
       margin-top: 2.5rem;
       opacity: 0; transform: translateY(15px);
@@ -414,13 +427,22 @@
     }
     .plans-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
-      max-width: 1150px; margin: 0 auto; align-items: start;
+      max-width: 1150px; margin: 0 auto;
+      /* Sin align-items:start las tarjetas se estiran a la altura de la mas
+         alta. Duo tiene una fila menos que las otras dos y quedaba mas corta,
+         con los tres botones a distinta altura. */
+      align-items: stretch;
     }
     .plan-card {
       background: var(--cream-light); border: 1px solid var(--rose-pale);
       border-radius: 20px; padding: 2.2rem 2rem 2rem;
       display: flex; flex-direction: column; gap: 1.4rem;
+      height: 100%;
     }
+    /* El boton se pega al fondo de la tarjeta: asi los tres quedan alineados
+       aunque el contenido de arriba mida distinto. */
+    .plan-cta { margin-top: auto; padding-top: 0.4rem; }
+    .plan-cta .btn-outline { display: block; text-align: center; padding-left: 1rem; padding-right: 1rem; }
     .plan-card-head { display: flex; flex-direction: column; gap: 0.5rem; }
     .plan-name {
       font-family: var(--font-brand); font-size: 1.3rem; font-weight: 500;
@@ -450,7 +472,11 @@
     .plan-table .plan-unit { color: var(--text-stone); font-size: 0.82rem; }
     .plan-vigencia {
       font-family: var(--font-brand); font-size: 0.7rem; letter-spacing: 0.04em;
-      color: var(--text-stone); margin-top: auto;
+      color: var(--text-stone);
+      /* Sin margin-top:auto: ahora quien empuja hacia abajo es el boton, y con
+         dos elementos reclamando el espacio libre este se reparte entre los dos
+         y la vigencia quedaba flotando a media tarjeta. Va pegada a su tabla,
+         que es de lo que es nota al pie. */
     }
     .plans-foot {
       max-width: 1150px; margin: 2.5rem auto 0;
@@ -835,7 +861,12 @@
       </h1>
       <p class="hero-subtitle" data-es="pilates studio &mdash; panam&aacute;" data-en="pilates studio &mdash; panam&aacute;">pilates studio &mdash; panam&aacute;</p>
       <div class="hero-cta">
-        <a href="#planes" class="btn-solid" data-es="encuentra tu plan ideal" data-en="find your ideal plan">encuentra tu plan ideal</a>
+        <a href="https://pilates-luma-vitae.perfectflow.cloud/es/agendar" class="btn-solid"
+           target="_blank" rel="noopener"
+           data-href-es="https://pilates-luma-vitae.perfectflow.cloud/es/agendar"
+           data-href-en="https://pilates-luma-vitae.perfectflow.cloud/en/agendar"
+           data-es="reservar mi clase" data-en="book my class">reservar mi clase</a>
+        <a href="#planes" class="btn-light-hero" data-es="ver paquetes" data-en="see packages">ver paquetes</a>
       </div>
     </div>
     <div class="hero-scroll">
@@ -974,7 +1005,9 @@
           </table>
         </div>
         <p class="plan-vigencia" data-es="Vigencia: 30 d&iacute;as &middot; 12 sesiones: 45 d&iacute;as" data-en="Validity: 30 days &middot; 12 sessions: 45 days">Vigencia: 30 d&iacute;as &middot; 12 sesiones: 45 d&iacute;as</p>
-      </div>
+
+        <div class="plan-cta"><a href="https://pilates-luma-vitae.perfectflow.cloud/es/paquetes?clase=reformer" class="btn-outline" target="_blank" rel="noopener" data-href-es="https://pilates-luma-vitae.perfectflow.cloud/es/paquetes?clase=reformer" data-href-en="https://pilates-luma-vitae.perfectflow.cloud/en/paquetes?clase=reformer" data-es="Comprar paquete Reformer" data-en="Buy Reformer package">Comprar paquete Reformer</a></div>
+            </div>
       <div class="plan-card rv rv-d1">
         <div class="plan-card-head">
           <h3 class="plan-name" data-es="Privadas" data-en="Private">Privadas</h3>
@@ -998,7 +1031,9 @@
           </table>
         </div>
         <p class="plan-vigencia" data-es="Vigencia: 30 d&iacute;as &middot; 12 sesiones: 45 d&iacute;as" data-en="Validity: 30 days &middot; 12 sessions: 45 days">Vigencia: 30 d&iacute;as &middot; 12 sesiones: 45 d&iacute;as</p>
-      </div>
+
+        <div class="plan-cta"><a href="https://pilates-luma-vitae.perfectflow.cloud/es/paquetes?clase=privada" class="btn-outline" target="_blank" rel="noopener" data-href-es="https://pilates-luma-vitae.perfectflow.cloud/es/paquetes?clase=privada" data-href-en="https://pilates-luma-vitae.perfectflow.cloud/en/paquetes?clase=privada" data-es="Comprar paquete Privadas" data-en="Buy Private package">Comprar paquete Privadas</a></div>
+            </div>
       <div class="plan-card rv rv-d2">
         <div class="plan-card-head">
           <h3 class="plan-name" data-es="D&uacute;o" data-en="Duo">D&uacute;o</h3>
@@ -1021,7 +1056,9 @@
           </table>
         </div>
         <p class="plan-vigencia" data-es="Vigencia: 30 d&iacute;as calendario" data-en="Validity: 30 calendar days">Vigencia: 30 d&iacute;as calendario</p>
-      </div>
+
+        <div class="plan-cta"><a href="https://pilates-luma-vitae.perfectflow.cloud/es/paquetes?clase=duo" class="btn-outline" target="_blank" rel="noopener" data-href-es="https://pilates-luma-vitae.perfectflow.cloud/es/paquetes?clase=duo" data-href-en="https://pilates-luma-vitae.perfectflow.cloud/en/paquetes?clase=duo" data-es="Comprar paquete D&uacute;o" data-en="Buy Duo package">Comprar paquete D&uacute;o</a></div>
+            </div>
     </div>
     <div class="plans-foot">
       <p class="plans-note rv" data-es="Precios en USD. No incluyen ITBMS." data-en="Prices in USD. ITBMS not included.">Precios en USD. No incluyen ITBMS.</p>
