@@ -95,6 +95,7 @@
        it ES and EN traffic are one blur. */
     var META_EVENT = {
       generate_lead: 'Lead',
+      begin_checkout: 'InitiateCheckout',
       ver_planes: 'ViewContent',
       ver_ubicacion: 'FindLocation'
     };
@@ -1287,8 +1288,17 @@
       /* Contact intents. All three are the same thing for the studio —
          someone reaching out — so they share the GA4 recommended event and
          separate by channel. */
-      if (href.includes('perfectflow.cloud')) {
-        lumaTrack('generate_lead', { metodo: 'agenda_online' });
+      if (href.includes('/paquetes')) {
+        /* Buying a package is not the same intent as booking a class, and
+           Meta optimises ads on these names: filed as Lead, the three package
+           buttons would teach it to chase the cheaper action. The class comes
+           from the link's own query, so a new package needs no change here. */
+        const clase = (href.match(/[?&]clase=([^&]+)/) || [])[1] || 'sin_clase';
+        lumaTrack('begin_checkout', { paquete: decodeURIComponent(clase) });
+      } else if (href.includes('perfectflow.cloud')) {
+        /* Same booking page from the hero and from the closing band: without
+           the origin they are one number and neither can be judged. */
+        lumaTrack('generate_lead', { metodo: 'agenda_online', origen: a.classList.contains('btn-solid') ? 'hero' : 'cta' });
       } else if (href.startsWith('https://wa.me')) {
         lumaTrack('generate_lead', { metodo: 'whatsapp', origen: a.classList.contains('btn-light') ? 'cta' : 'footer' });
       } else if (href.startsWith('mailto:')) {
