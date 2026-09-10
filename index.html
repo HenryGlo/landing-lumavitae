@@ -69,48 +69,13 @@
     gtag('js', new Date());
     gtag('config', GA4_ID);
 
-    /* Meta Pixel.
-
-       Unlike GA4 it has no consent mode: it either loads with cookies or it
-       does not load at all, so there is no denied middle ground to sit in
-       while the site has no cookie banner. It loads. */
-    !function (f, b, e, v, n, t, s) {
-      if (f.fbq) return; n = f.fbq = function () { n.callMethod ?
-      n.callMethod.apply(n, arguments) : n.queue.push(arguments) };
-      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-      n.queue = []; t = b.createElement(e); t.async = !0;
-      t.src = v; s = b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t, s)
-    }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1052054824122515');
-    fbq('track', 'PageView');
-
-    /* Single entry point for events: same event to GA4 and to Meta, under the
-       name each one expects. Anything not on the list goes to Meta as a custom
-       event. Both calls are wrapped because an ad blocker takes these tags out
-       routinely, and measurement must never break the page.
-
-       The site is bilingual and the toggle swaps copy in place without
-       changing the URL, so the language rides along on every event: without
-       it ES and EN traffic are one blur. */
-    var META_EVENT = {
-      generate_lead: 'Lead',
-      begin_checkout: 'InitiateCheckout',
-      ver_planes: 'ViewContent',
-      ver_ubicacion: 'FindLocation'
-    };
-
+    /* Single entry point for events. The site is bilingual and the toggle
+       swaps copy in place without changing the URL, so the language rides
+       along on every event: without it ES and EN traffic are one blur. */
     function lumaTrack(name, params) {
       var p = params || {};
       p.idioma_sitio = document.documentElement.lang || 'es';
       try { gtag('event', name, p); } catch (e) {}
-      try {
-        if (window.fbq) {
-          var meta = META_EVENT[name];
-          if (meta) fbq('track', meta, p);
-          else fbq('trackCustom', name, p);
-        }
-      } catch (e) {}
     }
 
     /* For a future cookie banner. Restoring the stored answer on every load
@@ -849,9 +814,6 @@
   </script>
 </head>
 <body>
-<!-- Meta Pixel fallback for visitors without JavaScript -->
-<noscript><img height="1" width="1" style="display:none" alt=""
-  src="https://www.facebook.com/tr?id=1052054824122515&ev=PageView&noscript=1"></noscript>
 
   <!-- NAV -->
   <nav id="nav">
