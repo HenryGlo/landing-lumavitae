@@ -704,6 +704,38 @@
     }
     .mobile-menu a:hover { color: var(--rose); }
 
+    /* ─── COOKIE CONSENT ─── */
+    .consent {
+      position: fixed; left: 1.5rem; bottom: 1.5rem; z-index: 150;
+      max-width: 380px; padding: 1.5rem 1.6rem 1.4rem;
+      background: var(--cream); border: 1px solid var(--rose-light); border-radius: 24px;
+      box-shadow: 0 18px 50px rgba(45, 36, 38, 0.14);
+      animation: consentIn 0.8s var(--ease-out-expo) both;
+    }
+    @keyframes consentIn { from { opacity: 0; transform: translateY(15px); } }
+    .consent-title {
+      font-family: var(--font-brand); font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: lowercase; color: var(--rose-deep);
+    }
+    .consent-text {
+      font-family: var(--font-body); font-size: 1.05rem; line-height: 1.45;
+      color: var(--text-dark); margin: 0.5rem 0 1.1rem;
+    }
+    .consent-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .consent-actions button {
+      flex: 1; font-family: var(--font-brand); font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: lowercase;
+      padding: 0.75rem 1.2rem; border-radius: 100px; border: 1.5px solid var(--rose);
+      transition: all 0.3s var(--ease-out-expo);
+    }
+    .consent-accept { background: var(--rose); color: #fff; }
+    .consent-accept:hover { background: var(--rose-deep); border-color: var(--rose-deep); }
+    .consent-reject { color: var(--rose-deep); }
+    .consent-reject:hover { background: var(--rose-pale); }
+    @media (max-width: 480px) {
+      .consent { left: 1rem; right: 1rem; bottom: 1rem; max-width: none; }
+    }
+
     /* ─── RESPONSIVE ─── */
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -1213,8 +1245,19 @@
     <div class="footer-links">
       <a href="#" data-es="privacidad" data-en="privacy">privacidad</a>
       <a href="#" data-es="t&eacute;rminos" data-en="terms">t&eacute;rminos</a>
+      <a href="#" id="consentOpen">cookies</a>
     </div>
   </footer>
+
+  <!-- COOKIE CONSENT -->
+  <div class="consent" id="consent" role="dialog" aria-labelledby="consentTitle" hidden>
+    <p class="consent-title" id="consentTitle">cookies</p>
+    <p class="consent-text" data-es="Usamos cookies anal&iacute;ticas para entender c&oacute;mo nos visitas y cuidar mejor este espacio. &iquest;Nos lo permites?" data-en="We use analytics cookies to understand how you visit us and take better care of this space. May we?">Usamos cookies anal&iacute;ticas para entender c&oacute;mo nos visitas y cuidar mejor este espacio. &iquest;Nos lo permites?</p>
+    <div class="consent-actions">
+      <button type="button" class="consent-reject" data-consent="no" data-es="rechazar" data-en="decline">rechazar</button>
+      <button type="button" class="consent-accept" data-consent="si" data-es="aceptar" data-en="accept">aceptar</button>
+    </div>
+  </div>
 
   <script>
     /* Language Toggle */
@@ -1236,6 +1279,26 @@
       lumaTrack('cambio_idioma', { idioma_elegido: lang });
     }
     document.getElementById('langToggle').addEventListener('click', toggleLang);
+
+    /* Cookie Consent
+       GA4 starts denied (see the head), and denied pings never reach the
+       reports: without this banner the property stays empty. Only shown
+       while there is no stored answer; the footer link reopens it so a
+       choice can be changed. */
+    const consent = document.getElementById('consent');
+    let consentSaved = null;
+    try { consentSaved = localStorage.getItem('luma-consent'); } catch (e) {}
+    if (!consentSaved) consent.hidden = false;
+    consent.addEventListener('click', e => {
+      const b = e.target.closest('[data-consent]');
+      if (!b) return;
+      lumaConsent(b.dataset.consent === 'si');
+      consent.hidden = true;
+    });
+    document.getElementById('consentOpen').addEventListener('click', e => {
+      e.preventDefault();
+      consent.hidden = false;
+    });
 
     /* Analytics Events
        One delegated listener instead of wiring each link: the social icons
