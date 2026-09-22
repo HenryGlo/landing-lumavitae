@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <!-- Página privada: se comparte por enlace, no se indexa ni se enlaza desde la landing. -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <title>Comunidad Fundadora — Lumavitae</title>
+  <meta name="description" content="Regístrate como miembro fundador de Lumavitae.">
+
+  <link rel="icon" type="image/svg+xml" href="images/brand/favicon.svg">
+  <link rel="apple-touch-icon" href="images/brand/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream: #FAF6F4;
+      --cream-deep: #EDE6E3;
+      --text-dark: #1A1918;
+      --text-stone: #6E6A68;
+      --rose: #C4929A;
+      --rose-soft: #D4A8AE;
+      --rose-light: #E8C8CC;
+      --rose-pale: #F2DEDE;
+      --rose-wash: #F9EEEF;
+      --rose-deep: #A87078;
+      --font-brand: 'Quicksand', sans-serif;
+      --font-body: 'Cormorant Garamond', serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body {
+      font-family: var(--font-body);
+      background:
+        radial-gradient(900px 460px at 50% -160px, var(--rose-wash), transparent 70%),
+        var(--cream);
+      color: var(--text-dark);
+      line-height: 1.6;
+      padding: 2.5rem 1.15rem 4rem;
+    }
+    ::selection { background: var(--rose-light); color: var(--text-dark); }
+    img { max-width: 100%; display: block; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    [hidden] { display: none !important; }
+    svg { flex: none; }
+
+    .wrap { max-width: 660px; margin: 0 auto; }
+
+    /* ─── CABECERA ─── */
+    .head { text-align: center; margin-bottom: 2.2rem; }
+    .head img { height: 32px; width: auto; margin: 0 auto 1.9rem; }
+    .kicker {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--font-brand); font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 0.2em; text-transform: lowercase; color: var(--rose-deep);
+      background: #FFF; border: 1px solid var(--rose-light); border-radius: 100px;
+      padding: 0.45rem 1.1rem;
+    }
+    .kicker svg { width: 13px; height: 13px; }
+    .head h1 {
+      font-family: var(--font-brand); font-weight: 300; font-size: clamp(1.9rem, 5.6vw, 2.6rem);
+      letter-spacing: -0.01em; line-height: 1.16; margin: 1.1rem 0 1.3rem;
+    }
+    .intro { font-size: 1.08rem; color: var(--text-stone); max-width: 52ch; margin-inline: auto; }
+    .intro + .intro { margin-top: 0.85rem; }
+    .intro strong { color: var(--text-dark); font-weight: 500; }
+
+    /* Los dos regalos, como tarjetas: se ven de un vistazo sin leer el párrafo. */
+    .perks { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1.7rem; }
+    .perk {
+      display: flex; gap: 0.8rem; align-items: flex-start; text-align: left;
+      background: #FFF; border: 1px solid var(--rose-light); border-radius: 20px;
+      padding: 1rem 1.1rem;
+    }
+    .perk .ic {
+      width: 38px; height: 38px; border-radius: 50%; background: var(--rose-wash);
+      display: grid; place-items: center; color: var(--rose-deep);
+    }
+    .perk .ic svg { width: 19px; height: 19px; }
+    .perk b {
+      display: block; font-family: var(--font-brand); font-size: 0.85rem; font-weight: 600;
+      line-height: 1.3; margin-bottom: 0.15rem;
+    }
+    .perk span { font-size: 0.98rem; color: var(--text-stone); line-height: 1.35; }
+    @media (max-width: 560px) { .perks { grid-template-columns: 1fr; } }
+
+    /* ─── TARJETA ─── */
+    .card {
+      background: #FFF; border: 1px solid var(--rose-light); border-radius: 30px;
+      padding: clamp(1.4rem, 4vw, 2.6rem);
+      box-shadow: 0 20px 60px rgba(26, 25, 24, 0.07);
+    }
+
+    /* ─── PASOS ─── */
+    .step + .step { margin-top: 2.4rem; padding-top: 2.2rem; border-top: 1px solid var(--cream-deep); }
+    .step-head { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.6rem; }
+    .step-n {
+      width: 30px; height: 30px; border-radius: 50%; background: var(--rose-wash);
+      border: 1px solid var(--rose-light); color: var(--rose-deep);
+      display: grid; place-items: center;
+      font-family: var(--font-brand); font-size: 0.78rem; font-weight: 600;
+    }
+    .step-head h2 {
+      font-family: var(--font-brand); font-size: 1.02rem; font-weight: 600; letter-spacing: 0.01em;
+    }
+
+    .field + .field { margin-top: 1.5rem; }
+
+    .q {
+      display: block; font-family: var(--font-brand); font-size: 0.92rem;
+      font-weight: 600; line-height: 1.4; margin-bottom: 0.75rem;
+    }
+    .q .req { color: var(--rose); }
+    .hint {
+      display: block; font-family: var(--font-brand); font-size: 0.76rem;
+      font-weight: 400; color: var(--text-stone); margin-top: 0.22rem;
+    }
+    fieldset { border: 0; }
+    fieldset legend { float: left; width: 100%; padding: 0; }
+    fieldset legend + * { clear: both; }
+
+    /* ─── CAMPOS DE TEXTO ─── */
+    /* El icono va dentro del campo, así la etiqueta se lee de un vistazo. */
+    .inp { position: relative; display: block; }
+    .inp > svg {
+      position: absolute; left: 1.05rem; top: 50%; transform: translateY(-50%);
+      width: 18px; height: 18px; color: var(--rose); pointer-events: none;
+      transition: color 0.3s var(--ease);
+    }
+    .inp input, textarea {
+      width: 100%; font-family: var(--font-body); font-size: 1.06rem; color: var(--text-dark);
+      background: var(--cream); border: 1.5px solid var(--cream-deep); border-radius: 16px;
+      padding: 0.92rem 1.1rem; transition: border-color 0.3s var(--ease), background 0.3s, box-shadow 0.3s;
+    }
+    .inp input { padding-left: 3rem; }
+    textarea { min-height: 108px; resize: vertical; line-height: 1.5; }
+    .inp input:focus, textarea:focus {
+      outline: none; border-color: var(--rose); background: #FFF;
+      box-shadow: 0 0 0 4px var(--rose-wash);
+    }
+    .inp:focus-within > svg { color: var(--rose-deep); }
+    input::placeholder, textarea::placeholder { color: #BDB6B3; }
+    input[type="date"] { font-family: var(--font-brand); font-size: 0.96rem; }
+    input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0.45; cursor: pointer; }
+
+    /* ─── OPCIONES ─── */
+    .opts { display: grid; gap: 0.5rem; }
+    .opts.two { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 560px) { .opts.two { grid-template-columns: 1fr; } }
+
+    .opt {
+      position: relative; display: flex; align-items: center; gap: 0.8rem; cursor: pointer;
+      font-size: 1.05rem; line-height: 1.35; padding: 0.85rem 1rem;
+      border: 1.5px solid var(--cream-deep); border-radius: 16px; background: var(--cream);
+      transition: border-color 0.25s var(--ease), background 0.25s var(--ease), transform 0.25s var(--ease);
+    }
+    .opt:hover { border-color: var(--rose-soft); transform: translateY(-1px); }
+    .opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+    /* Marca propia en vez del radio del sistema: se ve igual en todos los navegadores. */
+    .opt .mark {
+      width: 21px; height: 21px; border-radius: 50%; border: 1.5px solid var(--rose-soft);
+      background: #FFF; display: grid; place-items: center; flex: none;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .opt .mark::after {
+      content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--rose-deep);
+      transform: scale(0); transition: transform 0.25s var(--ease);
+    }
+    .opt input[type="checkbox"] ~ .mark { border-radius: 7px; }
+    .opt input[type="checkbox"] ~ .mark::after { border-radius: 2px; }
+    .opt input:checked ~ .mark::after { transform: scale(1); }
+    .opt:has(input:checked) { border-color: var(--rose); background: var(--rose-wash); }
+    .opt:has(input:checked) .mark { border-color: var(--rose-deep); }
+    .opt:has(input:focus-visible) { border-color: var(--rose-deep); box-shadow: 0 0 0 4px var(--rose-wash); }
+    .opt .oic { width: 19px; height: 19px; color: var(--rose-deep); }
+    .opt .txt { flex: 1; }
+
+    /* ─── PAQUETES ─── */
+    .pack {
+      margin-top: 1rem; padding: 1.15rem 1.2rem 1.25rem;
+      background: var(--rose-wash); border: 1px solid var(--rose-light); border-radius: 22px;
+      animation: rise 0.5s var(--ease) both;
+    }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+    .pack .opt { background: #FFF; border-color: var(--rose-pale); }
+    .pack .opt:has(input:checked) { background: #FFF; border-color: var(--rose-deep); }
+
+    .sess { flex: 1; display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+    .sess b { font-family: var(--font-brand); font-size: 0.92rem; font-weight: 600; }
+    .sess .price { font-family: var(--font-brand); font-size: 0.92rem; color: var(--text-stone); }
+    .off {
+      font-family: var(--font-brand); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.06em;
+      color: var(--rose-deep); background: var(--rose-wash); border: 1px solid var(--rose-light);
+      border-radius: 100px; padding: 0.15rem 0.6rem;
+    }
+
+    /* ─── ERRORES ─── */
+    .err {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-family: var(--font-brand); font-size: 0.78rem; font-weight: 500;
+      color: #A33B3B; margin-top: 0.55rem;
+    }
+    .err svg { width: 14px; height: 14px; }
+    .field.bad .inp input, .field.bad > textarea, .field.bad .pack textarea { border-color: #D49A9A; }
+    .field.bad .inp > svg { color: #A33B3B; }
+
+    /* ─── ENVIAR ─── */
+    .foot { margin-top: 2.2rem; }
+    .send {
+      width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+      font-family: var(--font-brand); font-size: 0.84rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: lowercase; color: #FFF;
+      background: var(--rose); border: 1.5px solid var(--rose); border-radius: 100px;
+      padding: 1.1rem 2rem; box-shadow: 0 12px 32px rgba(168, 112, 120, 0.25);
+      transition: background 0.35s var(--ease), transform 0.35s var(--ease);
+    }
+    .send svg { width: 16px; height: 16px; }
+    .send:hover:not(:disabled) { background: var(--rose-deep); border-color: var(--rose-deep); transform: translateY(-2px); }
+    .send:disabled { opacity: 0.65; cursor: wait; transform: none; }
+    .note {
+      font-family: var(--font-brand); font-size: 0.73rem; color: var(--text-stone);
+      margin-top: 1rem; line-height: 1.55; text-align: center;
+    }
+    .sendmsg {
+      display: flex; align-items: center; gap: 0.5rem; justify-content: center;
+      font-family: var(--font-brand); font-size: 0.82rem; color: #A33B3B;
+      margin-top: 1rem; text-align: center;
+    }
+    .sendmsg a { color: #A33B3B; text-decoration: underline; }
+
+    /* Trampa para bots: invisible, y nadie la rellena a mano. */
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+    /* ─── GRACIAS ─── */
+    .done { text-align: center; padding: 1.5rem 0 1rem; animation: rise 0.7s var(--ease) both; }
+    .done .mk {
+      width: 72px; height: 72px; margin: 0 auto 1.5rem; border-radius: 50%;
+      background: var(--rose-wash); border: 1px solid var(--rose-light);
+      display: grid; place-items: center; color: var(--rose-deep);
+    }
+    .done .mk svg { width: 30px; height: 30px; }
+    .done h2 {
+      font-family: var(--font-brand); font-weight: 300; font-size: clamp(1.6rem, 5vw, 2.1rem);
+      margin-bottom: 0.9rem;
+    }
+    .done p { font-size: 1.08rem; color: var(--text-stone); max-width: 42ch; margin-inline: auto; }
+    .done .wa {
+      display: inline-flex; align-items: center; gap: 0.55rem; margin-top: 1.9rem;
+      font-family: var(--font-brand); font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: lowercase; text-decoration: none;
+      color: var(--rose-deep); border: 1.5px solid var(--rose); border-radius: 100px;
+      padding: 0.9rem 2.2rem; transition: background 0.3s, color 0.3s;
+    }
+    .done .wa svg { width: 16px; height: 16px; }
+    .done .wa:hover { background: var(--rose); color: #FFF; }
+
+    .legal {
+      text-align: center; font-family: var(--font-brand); font-size: 0.72rem;
+      color: var(--text-stone); margin-top: 2rem; line-height: 1.6;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Iconos: un solo sprite, se reutilizan con <use>. Trazo fino, como la marca. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <g id="i-spark"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></g>
+    <g id="i-user"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></g>
+    <g id="i-cake"><path d="M4 21h16v-6a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3z"/><path d="M12 8V5M9 5.5c0-1 1-2 3-2.5"/><path d="M4 16c2 1.5 3 1.5 4 0s2-1.5 4 0 3 1.5 4 0 2-1.5 4 0"/></g>
+    <g id="i-chat"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></g>
+    <g id="i-mail"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></g>
+    <g id="i-heart"><path d="M12 20s-7-4.5-7-9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 7 3.5C19 15.5 12 20 12 20z"/></g>
+    <g id="i-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></g>
+    <g id="i-duo"><circle cx="8" cy="8" r="3.2"/><circle cx="16" cy="8" r="3.2"/><path d="M2.5 20v-1a4 4 0 0 1 4-4h3a4 4 0 0 1 4 4v1M14 15h3.5a4 4 0 0 1 4 4v1"/></g>
+    <g id="i-help"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.4v.4"/><path d="M12 17.2v.1"/></g>
+    <g id="i-flame"><path d="M12 3s5 4.2 5 9a5 5 0 0 1-10 0c0-1.7.8-3 1.6-3.9 0 1.6 1 2.4 1.8 2.4 1.3 0 1.9-1.2 1.9-3 0-1.8-.3-3-.3-4.5z"/></g>
+    <g id="i-spine"><path d="M12 3v18"/><path d="M9 6h6M8.5 10h7M8.5 14h7M9 18h6"/></g>
+    <g id="i-balance"><path d="M12 3v18M5 8h14"/><path d="M5 8 2.5 14h5zM19 8l-2.5 6h5z"/></g>
+    <g id="i-calendar"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></g>
+    <g id="i-dots"><circle cx="12" cy="12" r="9"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></g>
+    <g id="i-note"><path d="M4 4h16v13l-4 4H4z"/><path d="M20 17h-4v4"/><path d="M8 9h8M8 13h5"/></g>
+    <g id="i-ig"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17 7h.01"/></g>
+    <g id="i-music"><path d="M9 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M12 15V4c1.5 2.5 3 3.5 5.5 3.7"/></g>
+    <g id="i-star"><path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.7l5.9-.8z"/></g>
+    <g id="i-gift"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13"/><path d="M12 8S10.5 4 8 4a2 2 0 0 0 0 4zM12 8s1.5-4 4-4a2 2 0 0 1 0 4z"/></g>
+    <g id="i-check"><path d="m5 12.5 4.5 4.5L19 7.5"/></g>
+    <g id="i-alert"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16.3v.1"/></g>
+    <g id="i-arrow"><path d="M4 12h15M13 6l6 6-6 6"/></g>
+    <g id="i-wa"><path d="M3.5 20.5 5 16.4A8 8 0 1 1 8 19.4z"/><path d="M9 9.2c0 3 2.4 5.6 5.4 5.9.6.1 1.1-.4 1.1-1v-.6l-2-.8-.9 1a5.6 5.6 0 0 1-2.4-2.5l1-.8-.8-2h-.6c-.5 0-1 .4-.9 1z"/></g>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header class="head">
+    <img src="images/brand/wordmark.svg" alt="lumavitae" width="1000" height="249">
+    <p class="kicker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-spark"/></svg> comunidad fundadora</p>
+    <h1>Gracias por ser parte de nuestros primeros pasos</h1>
+    <p class="intro">Ser miembro fundador significa acompa&ntilde;arnos desde el comienzo y formar parte de una comunidad que elige el movimiento consciente para conectar y encontrar equilibrio.</p>
+    <div class="perks">
+      <div class="perk">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-star"/></svg></span>
+        <span><b>15% de descuento*</b><span>Para las primeras 30 personas registradas.</span></span>
+      </div>
+      <div class="perk">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-gift"/></svg></span>
+        <span><b>Kit de Miembro Fundador</b><span>De regalo con tu paquete desde 4 clases.</span></span>
+      </div>
+    </div>
+    <p class="intro" style="margin-top:1.5rem">Completa estos datos para preparar tu experiencia. Te tomar&aacute; menos de 1 minuto. &#10024;</p>
+  </header>
+
+  <div class="card">
+    <form id="form" novalidate>
+
+      <!-- ─── 1. DATOS ─── -->
+      <section class="step">
+        <div class="step-head"><span class="step-n">1</span><h2>Tus datos</h2></div>
+
+        <div class="field" data-field="nombre">
+          <label class="q" for="nombre">Nombre completo <span class="req">*</span></label>
+          <span class="inp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-user"/></svg>
+            <input type="text" id="nombre" name="nombre" autocomplete="name" placeholder="Tu nombre y apellido">
+          </span>
+        </div>
+
+        <div class="field" data-field="nacimiento">
+          <label class="q" for="nacimiento">Fecha de nacimiento <span class="req">*</span></label>
+          <span class="inp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-cake"/></svg>
+            <input type="date" id="nacimiento" name="nacimiento">
+          </span>
+        </div>
+
+        <div class="field" data-field="whatsapp">
+          <label class="q" for="whatsapp">WhatsApp <span class="req">*</span><span class="hint">Por aqu&iacute; coordinamos tus clases.</span></label>
+          <span class="inp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg>
+            <input type="tel" id="whatsapp" name="whatsapp" autocomplete="tel" placeholder="+507 6000 0000">
+          </span>
+        </div>
+
+        <div class="field" data-field="correo">
+          <label class="q" for="correo">Correo electr&oacute;nico <span class="req">*</span></label>
+          <span class="inp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-mail"/></svg>
+            <input type="email" id="correo" name="correo" autocomplete="email" placeholder="tunombre@correo.com">
+          </span>
+        </div>
+      </section>
+
+      <!-- ─── 2. EXPERIENCIA ─── -->
+      <section class="step">
+        <div class="step-head"><span class="step-n">2</span><h2>Tu experiencia</h2></div>
+
+        <fieldset class="field" data-field="experiencia">
+          <legend class="q">&iquest;Has practicado Pilates anteriormente? <span class="req">*</span></legend>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="experiencia" value="No, nunca."><span class="mark"></span><span class="txt">No, nunca.</span></label>
+            <label class="opt"><input type="radio" name="experiencia" value="S&iacute;, alguna vez."><span class="mark"></span><span class="txt">S&iacute;, alguna vez.</span></label>
+            <label class="opt"><input type="radio" name="experiencia" value="S&iacute;, actualmente."><span class="mark"></span><span class="txt">S&iacute;, actualmente.</span></label>
+          </div>
+        </fieldset>
+      </section>
+
+      <!-- ─── 3. PLAN ─── -->
+      <section class="step">
+        <div class="step-head"><span class="step-n">3</span><h2>Tu plan</h2></div>
+
+        <fieldset class="field" data-field="plan">
+          <legend class="q">&iquest;Qu&eacute; plan o paquete deseas reservar? <span class="req">*</span></legend>
+          <div class="opts two">
+            <label class="opt"><input type="radio" name="plan" value="Packs grupales" data-pack="grupales"><span class="mark"></span><svg class="oic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-users"/></svg><span class="txt">Packs grupales</span></label>
+            <label class="opt"><input type="radio" name="plan" value="Pack privadas" data-pack="privadas"><span class="mark"></span><svg class="oic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-user"/></svg><span class="txt">Pack privadas</span></label>
+            <label class="opt"><input type="radio" name="plan" value="Pack d&uacute;o" data-pack="duo"><span class="mark"></span><svg class="oic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-duo"/></svg><span class="txt">Pack d&uacute;o</span></label>
+            <label class="opt"><input type="radio" name="plan" value="Quiero orientaci&oacute;n" data-pack="orientacion"><span class="mark"></span><svg class="oic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-help"/></svg><span class="txt">Quiero orientaci&oacute;n</span></label>
+          </div>
+
+          <!-- Cada bloque aparece solo con su plan, como los saltos de sección del formulario original. -->
+          <div class="pack" data-pack-block="grupales" hidden>
+            <p class="q">Selecciona tu paquete <span class="req">*</span><span class="hint">Clases grupales en reformer.</span></p>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="paquete_grupales" value="4 Sesiones &mdash; $84.00 - 15% Off*."><span class="mark"></span><span class="sess"><b>4 sesiones</b><span class="price">$84.00</span></span><span class="off">15% off*</span></label>
+              <label class="opt"><input type="radio" name="paquete_grupales" value="8 Sesiones &mdash; $150.00 - 15% Off*."><span class="mark"></span><span class="sess"><b>8 sesiones</b><span class="price">$150.00</span></span><span class="off">15% off*</span></label>
+              <label class="opt"><input type="radio" name="paquete_grupales" value="12 Sesiones &mdash; $210.00 - 15% Off*."><span class="mark"></span><span class="sess"><b>12 sesiones</b><span class="price">$210.00</span></span><span class="off">15% off*</span></label>
+            </div>
+          </div>
+
+          <div class="pack" data-pack-block="privadas" hidden>
+            <p class="q">Selecciona tu paquete <span class="req">*</span><span class="hint">Uno a uno con tu instructora.</span></p>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="paquete_privadas" value="4 Sesiones &mdash; $155.00 - 15% Off*."><span class="mark"></span><span class="sess"><b>4 sesiones</b><span class="price">$155.00</span></span><span class="off">15% off*</span></label>
+              <label class="opt"><input type="radio" name="paquete_privadas" value="8 Sesiones &mdash; $290.00 - 15% Off*."><span class="mark"></span><span class="sess"><b>8 sesiones</b><span class="price">$290.00</span></span><span class="off">15% off*</span></label>
+              <label class="opt"><input type="radio" name="paquete_privadas" value="12 Sesiones &mdash; $420.00 - 15% Off*."><span class="mark"></span><span class="sess"><b>12 sesiones</b><span class="price">$420.00</span></span><span class="off">15% off*</span></label>
+            </div>
+          </div>
+
+          <div class="pack" data-pack-block="duo" hidden>
+            <p class="q">Selecciona tu paquete <span class="req">*</span><span class="hint">Dos personas, una instructora. El precio es por las dos.</span></p>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="paquete_duo" value="4 Sesiones &mdash; $260.00 - 15% Off*."><span class="mark"></span><span class="sess"><b>4 sesiones</b><span class="price">$260.00</span></span><span class="off">15% off*</span></label>
+              <label class="opt"><input type="radio" name="paquete_duo" value="8 Sesiones &mdash; $500.00 - 15% Off*."><span class="mark"></span><span class="sess"><b>8 sesiones</b><span class="price">$500.00</span></span><span class="off">15% off*</span></label>
+            </div>
+          </div>
+
+          <div class="pack" data-pack-block="orientacion" hidden>
+            <label class="q" for="consulta">Escribe tu consulta <span class="req">*</span><span class="hint">Te contactaremos para elegir juntas tu plan ideal.</span></label>
+            <textarea id="consulta" name="consulta" placeholder="Cu&eacute;ntanos qu&eacute; buscas y te orientamos."></textarea>
+          </div>
+        </fieldset>
+      </section>
+
+      <!-- ─── 4. INTENCIÓN ─── -->
+      <section class="step">
+        <div class="step-head"><span class="step-n">4</span><h2>Tu intenci&oacute;n</h2></div>
+
+        <fieldset class="field" data-field="objetivos">
+          <legend class="q">&iquest;Qu&eacute; te gustar&iacute;a trabajar principalmente en Lumavitae? <span class="req">*</span><span class="hint">Puedes marcar varias.</span></legend>
+          <div class="opts two">
+            <label class="opt"><input type="checkbox" name="objetivos" value="Fuerza y tonificaci&oacute;n"><span class="mark"></span><svg class="oic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-flame"/></svg><span class="txt">Fuerza y tonificaci&oacute;n</span></label>
+            <label class="opt"><input type="checkbox" name="objetivos" value="Postura y movilidad"><span class="mark"></span><svg class="oic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-spine"/></svg><span class="txt">Postura y movilidad</span></label>
+            <label class="opt"><input type="checkbox" name="objetivos" value="Flexibilidad y equilibrio"><span class="mark"></span><svg class="oic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-balance"/></svg><span class="txt">Flexibilidad y equilibrio</span></label>
+            <label class="opt"><input type="checkbox" name="objetivos" value="Crear un h&aacute;bito de movimiento"><span class="mark"></span><svg class="oic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-calendar"/></svg><span class="txt">Crear un h&aacute;bito de movimiento</span></label>
+            <label class="opt"><input type="checkbox" name="objetivos" value="Otro"><span class="mark"></span><svg class="oic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-dots"/></svg><span class="txt">Otro</span></label>
+          </div>
+        </fieldset>
+
+        <div class="field" data-field="notas">
+          <label class="q" for="notas">&iquest;Hay algo que consideres importante que sepamos para acompa&ntilde;arte durante tus clases?<span class="hint">Lesiones, embarazo, cirug&iacute;as&hellip; lo que quieras contarnos. Opcional.</span></label>
+          <textarea id="notas" name="notas" placeholder="Escr&iacute;belo aqu&iacute; con confianza."></textarea>
+        </div>
+
+        <fieldset class="field" data-field="conociste">
+          <legend class="q">&iquest;C&oacute;mo conociste Lumavitae? <span class="req">*</span></legend>
+          <div class="opts two">
+            <label class="opt"><input type="radio" name="conociste" value="Instagram"><span class="mark"></span><svg class="oic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-ig"/></svg><span class="txt">Instagram</span></label>
+            <label class="opt"><input type="radio" name="conociste" value="Tiktok"><span class="mark"></span><svg class="oic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-music"/></svg><span class="txt">Tiktok</span></label>
+            <label class="opt"><input type="radio" name="conociste" value="Recomendaci&oacute;n"><span class="mark"></span><svg class="oic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-heart"/></svg><span class="txt">Recomendaci&oacute;n</span></label>
+            <label class="opt"><input type="radio" name="conociste" value="Otro"><span class="mark"></span><svg class="oic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-dots"/></svg><span class="txt">Otro</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field" data-field="confirmacion">
+          <legend class="q">Confirmaci&oacute;n <span class="req">*</span></legend>
+          <div class="opts">
+            <label class="opt"><input type="checkbox" name="confirmacion" value="si"><span class="mark"></span><span class="txt">Confirmo que mis datos son correctos y acepto las pol&iacute;ticas de Lumavitae.</span></label>
+          </div>
+        </fieldset>
+      </section>
+
+      <div class="hp" aria-hidden="true">
+        <label>No rellenar<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+      </div>
+
+      <div class="foot">
+        <button type="submit" class="send" id="send">
+          <span id="sendtxt">enviar mi registro</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-arrow"/></svg>
+        </button>
+        <p class="sendmsg" id="sendmsg" role="alert" hidden></p>
+        <p class="note">*El 15% de descuento aplica para las primeras 30 personas registradas.</p>
+      </div>
+    </form>
+
+    <div class="done" id="done" hidden>
+      <div class="mk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg></div>
+      <h2>&iexcl;Bienvenida a la comunidad fundadora!</h2>
+      <p>Recibimos tu registro. Te escribiremos por WhatsApp para coordinar tu paquete y tu primera clase.</p>
+      <a class="wa" href="https://wa.me/50765753861" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-wa"/></svg>
+        escr&iacute;benos por whatsapp
+      </a>
+    </div>
+  </div>
+
+  <p class="legal">Lumavitae &middot; Pilates Studio &middot; Panam&aacute;</p>
+</div>
+
+<script>
+  /* El flow de Activepieces que recibe cada registro. */
+  var WEBHOOK_URL = 'https://cloud.activepieces.com/api/v1/webhooks/Y4Bz9vtCDYYPY10dEQpzC';
+
+  var form = document.getElementById('form');
+  var done = document.getElementById('done');
+  var send = document.getElementById('send');
+  var sendtxt = document.getElementById('sendtxt');
+  var sendmsg = document.getElementById('sendmsg');
+  var packs = Array.prototype.slice.call(document.querySelectorAll('[data-pack-block]'));
+
+  function field(name) { return document.querySelector('[data-field="' + name + '"]'); }
+
+  /* Los bloques de paquete se muestran según el plan. El que se oculta se
+     limpia: si alguien elige privadas y luego dúo, no puede viajar el paquete
+     de la primera elección. */
+  function syncPacks() {
+    var chosen = form.querySelector('input[name="plan"]:checked');
+    var key = chosen ? chosen.getAttribute('data-pack') : null;
+    packs.forEach(function (p) {
+      var on = p.getAttribute('data-pack-block') === key;
+      p.hidden = !on;
+      if (!on) {
+        Array.prototype.forEach.call(p.querySelectorAll('input[type="radio"]'), function (r) { r.checked = false; });
+        Array.prototype.forEach.call(p.querySelectorAll('textarea'), function (t) { t.value = ''; });
+      }
+    });
+  }
+  Array.prototype.forEach.call(form.querySelectorAll('input[name="plan"]'), function (r) {
+    r.addEventListener('change', function () { syncPacks(); clearError('plan'); });
+  });
+
+  function clearError(name) {
+    var f = field(name);
+    if (!f) return;
+    f.classList.remove('bad');
+    var e = f.querySelector('.err');
+    if (e) e.remove();
+  }
+  function setError(name, msg) {
+    var f = field(name);
+    f.classList.add('bad');
+    if (!f.querySelector('.err')) {
+      var p = document.createElement('p');
+      p.className = 'err';
+      p.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-alert"/></svg><span></span>';
+      p.querySelector('span').textContent = msg;
+      f.appendChild(p);
+    }
+    return f;
+  }
+  form.addEventListener('input', function (e) {
+    var f = e.target.closest('[data-field]');
+    if (f) clearError(f.getAttribute('data-field'));
+  });
+  form.addEventListener('change', function (e) {
+    var f = e.target.closest('[data-field]');
+    if (f) clearError(f.getAttribute('data-field'));
+  });
+
+  function val(name) {
+    var el = form.elements[name];
+    return el && el.value ? el.value.trim() : '';
+  }
+  function picked(name) {
+    var el = form.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : '';
+  }
+
+  function validate() {
+    var bad = null;
+    [
+      ['nombre', 'Escribe tu nombre completo.'],
+      ['nacimiento', 'Indica tu fecha de nacimiento.'],
+      ['whatsapp', 'Necesitamos tu WhatsApp para contactarte.'],
+      ['correo', 'Escribe tu correo electrónico.']
+    ].forEach(function (n) {
+      if (!val(n[0])) bad = setError(n[0], n[1]) || bad;
+    });
+    var correo = val('correo');
+    if (correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) bad = setError('correo', 'Revisa el correo: parece incompleto.') || bad;
+
+    if (!picked('experiencia')) bad = setError('experiencia', 'Elige una opción.') || bad;
+
+    var plan = form.querySelector('input[name="plan"]:checked');
+    if (!plan) {
+      bad = setError('plan', 'Elige el plan que te interesa.') || bad;
+    } else {
+      var key = plan.getAttribute('data-pack');
+      if (key === 'orientacion') {
+        if (!val('consulta')) bad = setError('plan', 'Cuéntanos brevemente tu consulta.') || bad;
+      } else if (!picked('paquete_' + key)) {
+        bad = setError('plan', 'Elige el paquete que quieres.') || bad;
+      }
+    }
+
+    if (!form.querySelectorAll('input[name="objetivos"]:checked').length) bad = setError('objetivos', 'Marca al menos una opción.') || bad;
+    if (!picked('conociste')) bad = setError('conociste', 'Elige una opción.') || bad;
+    if (!form.querySelector('input[name="confirmacion"]').checked) bad = setError('confirmacion', 'Confirma para poder enviar tu registro.') || bad;
+
+    return bad;
+  }
+
+  function payload() {
+    var plan = form.querySelector('input[name="plan"]:checked');
+    var key = plan.getAttribute('data-pack');
+    var objetivos = Array.prototype.slice
+      .call(form.querySelectorAll('input[name="objetivos"]:checked'))
+      .map(function (c) { return c.value; });
+    return {
+      nombre: val('nombre'),
+      fecha_nacimiento: val('nacimiento'),
+      whatsapp: val('whatsapp'),
+      correo: val('correo'),
+      experiencia_pilates: picked('experiencia'),
+      plan: plan.value,
+      paquete: key === 'orientacion' ? '' : picked('paquete_' + key),
+      consulta: key === 'orientacion' ? val('consulta') : '',
+      objetivos: objetivos,
+      notas: val('notas'),
+      como_nos_conocio: picked('conociste'),
+      confirmacion: true,
+      enviado_en: new Date().toISOString(),
+      origen: 'comunidad-fundadora'
+    };
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    sendmsg.hidden = true;
+
+    /* La trampa de bots está rellena: fingimos éxito y no mandamos nada. */
+    if (val('website')) { form.hidden = true; done.hidden = false; return; }
+
+    var bad = validate();
+    if (bad) {
+      bad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    send.disabled = true;
+    sendtxt.textContent = 'enviando…';
+
+    fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload())
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      form.hidden = true;
+      done.hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }).catch(function () {
+      /* Sin esto el registro se pierde en silencio: le damos una salida. */
+      sendmsg.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><use href="#i-alert"/></svg><span>No pudimos enviar tu registro. Int&eacute;ntalo otra vez o escr&iacute;benos por <a href="https://wa.me/50765753861" target="_blank" rel="noopener">WhatsApp</a>.</span>';
+      sendmsg.hidden = false;
+      send.disabled = false;
+      sendtxt.textContent = 'enviar mi registro';
+    });
+  });
+
+  syncPacks();
+</script>
+
+</body>
+</html>
