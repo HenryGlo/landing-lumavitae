@@ -190,8 +190,11 @@
       padding: 1rem 3rem;
     }
     .nav-brand { display: flex; align-items: center; gap: 0.6rem; }
-    .nav-wordmark { height: 22px; width: auto; transition: height 0.4s var(--ease-out-expo); }
-    nav.scrolled .nav-wordmark { height: 19px; }
+    .nav-wordmark { height: 32px; width: auto; transition: height 0.4s var(--ease-out-expo); }
+    nav.scrolled .nav-wordmark { height: 27px; }
+    /* El isotipo solo sale en pantallas estrechas (ver el @media de 768px):
+       ahí el wordmark entero se come el sitio del menú. */
+    .nav-isotipo { display: none; width: auto; transition: height 0.4s var(--ease-out-expo); }
     .nav-links { display: flex; align-items: center; gap: 2.5rem; }
     .nav-links a {
       font-family: var(--font-brand); font-size: 0.78rem; font-weight: 400;
@@ -765,6 +768,11 @@
     @media (max-width: 768px) {
       nav { padding: 1.2rem 1.5rem; }
       nav.scrolled { padding: 0.8rem 1.5rem; }
+      /* En móvil la marca entra por el isotipo: ocupa lo justo al lado del
+         menú y se sigue reconociendo. */
+      .nav-wordmark { display: none; }
+      .nav-isotipo { display: block; height: 34px; }
+      nav.scrolled .nav-isotipo { height: 29px; }
       .nav-links { display: none; }
       .nav-hamburger { display: flex; }
       .hero-tags { gap: 1.5rem; flex-wrap: wrap; }
@@ -849,8 +857,9 @@
 
   <!-- NAV -->
   <nav id="nav">
-    <a href="#" class="nav-brand" aria-label="lumavitae">
+    <a href="#inicio" class="nav-brand" aria-label="lumavitae · ir al inicio">
       <img class="nav-wordmark" src="images/brand/wordmark.svg" alt="lumavitae" width="1000" height="249">
+      <img class="nav-isotipo" src="images/brand/isotipo-rose.svg" alt="" aria-hidden="true" width="686" height="678">
     </a>
     <div class="nav-links">
       <a href="#about" data-es="sobre nosotros" data-en="about us">sobre nosotros</a>
@@ -878,7 +887,7 @@
   </div>
 
   <!-- HERO -->
-  <section class="hero">
+  <section class="hero" id="inicio">
     <div class="hero-bg"></div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
