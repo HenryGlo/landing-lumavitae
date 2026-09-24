@@ -688,7 +688,9 @@
       padding: 2.5rem 3rem; display: flex; justify-content: space-between; align-items: center;
     }
     .footer-brand { display: flex; align-items: center; }
-    .footer-wordmark { height: 18px; width: auto; }
+    /* Mismo alto que el wordmark del nav: el logo mide igual en todas partes
+       salvo en el hero, que va grande a propósito. */
+    .footer-wordmark { height: 46px; width: auto; }
     .footer-text { font-family: var(--font-brand); font-size: 0.7rem; color: var(--text-stone); letter-spacing: 0.04em; }
     .footer-links { display: flex; gap: 1.8rem; }
     .footer-links a { font-family: var(--font-brand); font-size: 0.7rem; font-weight: 500; color: var(--text-stone); transition: color 0.3s; letter-spacing: 0.04em; }
