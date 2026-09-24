@@ -71,13 +71,12 @@ Luma is a female-focused luxury pilates studio. The brand embodies quiet feminin
 - No build tools required — vanilla HTML/CSS/JS
 - Language toggle ES/EN via JavaScript data attributes
 - Google Fonts: Quicksand, Cormorant Garamond
-- Leaflet.js with CartoDB Positron tiles for interactive map
+- Leaflet.js with OpenStreetMap tiles for interactive map (CARTO now requires an API key and watermarks every tile without one)
 - Responsive: mobile-first design
 - Smooth scroll, intersection observer animations
 
 ## Deployment
 - **Domain:** pilateslumavitae.com
-- **Hosted via:** ~/dev/infra (Cloudflare Tunnel → Caddy file_server)
-- **Site files:** ~/dev/infra/sites/luma/public/
-- **Deploy:** Copy files to infra, commit, push, run `./scripts/deploy-remote.sh`
-- **DNS:** Cloudflare CNAME → Cloudflare Tunnel
+- **Hosted via:** GitHub Pages, served from `main` (see `CNAME`)
+- **Deploy:** push to `main`; the site updates within a minute or two. Pages sends `max-age=600`, so a browser may show the old version for up to 10 minutes.
+- `deploy.sh` and the `~/dev/infra` + Cloudflare Tunnel setup it targets are no longer what serves the domain.
