@@ -1406,9 +1406,11 @@
   <script>
     const STUDIO = [9.0869915, -79.4597593];
     const map = L.map('map', { scrollWheelZoom: false, zoomControl: true }).setView(STUDIO, 17);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
-      subdomains: 'abcd', maxZoom: 20
+    /* CARTO paso a exigir API key: sin ella cada tesela lleva la marca de agua
+       "API KEY REQUIRED". Las de OpenStreetMap no piden clave, solo atribucion. */
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 19
     }).addTo(map);
     const pin = L.divIcon({
       className: 'luma-marker',
