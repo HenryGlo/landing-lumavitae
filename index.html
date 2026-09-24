@@ -472,6 +472,9 @@
     }
     .plan-table td:first-child { text-align: left; color: var(--text-stone-dark); }
     .plan-table .plan-price { font-weight: 600; }
+    /* Debajo del precio y no al lado: en línea ensanchaba la columna y en móvil
+       los encabezados "precio" y "por sesión" se leían como uno solo. */
+    .plan-table .plan-tax { display: block; font-size: 0.62rem; font-weight: 600; color: var(--rose-deep); letter-spacing: 0.02em; line-height: 1.2; }
     .plan-table .plan-unit { color: var(--text-stone); font-size: 0.82rem; }
     .plan-vigencia {
       font-family: var(--font-brand); font-size: 0.7rem; letter-spacing: 0.04em;
@@ -1040,10 +1043,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>1</td><td class="plan-price">$25</td><td class="plan-unit">$25.00</td></tr>
-              <tr><td>4</td><td class="plan-price">$84</td><td class="plan-unit">$21.00</td></tr>
-              <tr><td>8</td><td class="plan-price">$150</td><td class="plan-unit">$18.75</td></tr>
-              <tr><td>12</td><td class="plan-price">$210</td><td class="plan-unit">$17.50</td></tr>
+              <tr><td>1</td><td class="plan-price">$25 <span class="plan-tax">+ 7% ITBMS</span></td><td class="plan-unit">$25.00</td></tr>
+              <tr><td>4</td><td class="plan-price">$84 <span class="plan-tax">+ 7% ITBMS</span></td><td class="plan-unit">$21.00</td></tr>
+              <tr><td>8</td><td class="plan-price">$150 <span class="plan-tax">+ 7% ITBMS</span></td><td class="plan-unit">$18.75</td></tr>
+              <tr><td>12</td><td class="plan-price">$210 <span class="plan-tax">+ 7% ITBMS</span></td><td class="plan-unit">$17.50</td></tr>
             </tbody>
           </table>
         </div>
@@ -1066,10 +1069,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>1</td><td class="plan-price">$42</td><td class="plan-unit">$42.00</td></tr>
-              <tr><td>4</td><td class="plan-price">$155</td><td class="plan-unit">$38.75</td></tr>
-              <tr><td>8</td><td class="plan-price">$290</td><td class="plan-unit">$36.25</td></tr>
-              <tr><td>12</td><td class="plan-price">$420</td><td class="plan-unit">$35.00</td></tr>
+              <tr><td>1</td><td class="plan-price">$42 <span class="plan-tax">+ 7% ITBMS</span></td><td class="plan-unit">$42.00</td></tr>
+              <tr><td>4</td><td class="plan-price">$155 <span class="plan-tax">+ 7% ITBMS</span></td><td class="plan-unit">$38.75</td></tr>
+              <tr><td>8</td><td class="plan-price">$290 <span class="plan-tax">+ 7% ITBMS</span></td><td class="plan-unit">$36.25</td></tr>
+              <tr><td>12</td><td class="plan-price">$420 <span class="plan-tax">+ 7% ITBMS</span></td><td class="plan-unit">$35.00</td></tr>
             </tbody>
           </table>
         </div>
@@ -1092,9 +1095,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>1</td><td class="plan-price">$70</td><td class="plan-unit">$35.00</td></tr>
-              <tr><td>4</td><td class="plan-price">$260</td><td class="plan-unit">$32.50</td></tr>
-              <tr><td>8</td><td class="plan-price">$500</td><td class="plan-unit">$31.25</td></tr>
+              <tr><td>1</td><td class="plan-price">$70 <span class="plan-tax">+ 7% ITBMS</span></td><td class="plan-unit">$35.00</td></tr>
+              <tr><td>4</td><td class="plan-price">$260 <span class="plan-tax">+ 7% ITBMS</span></td><td class="plan-unit">$32.50</td></tr>
+              <tr><td>8</td><td class="plan-price">$500 <span class="plan-tax">+ 7% ITBMS</span></td><td class="plan-unit">$31.25</td></tr>
             </tbody>
           </table>
         </div>
@@ -1104,7 +1107,7 @@
             </div>
     </div>
     <div class="plans-foot">
-      <p class="plans-note rv" data-es="Precios en USD. No incluyen ITBMS." data-en="Prices in USD. ITBMS not included.">Precios en USD. No incluyen ITBMS.</p>
+      <p class="plans-note rv" data-es="Precios en USD. &lt;strong&gt;Los precios no incluyen el ITBMS (7%).&lt;/strong&gt;" data-en="Prices in USD. &lt;strong&gt;Prices do not include ITBMS (7%).&lt;/strong&gt;">Precios en USD. <strong>Los precios no incluyen el ITBMS (7%).</strong></p>
       <details class="terms rv rv-d1">
         <summary>
           <span data-es="t&eacute;rminos de los paquetes" data-en="package terms">t&eacute;rminos de los paquetes</span>
@@ -1113,7 +1116,7 @@
         <div class="terms-panel">
           <h3 data-es="Condiciones" data-en="Conditions">Condiciones</h3>
           <ul class="terms-list">
-            <li data-es="Los precios no incluyen ITBMS." data-en="Prices do not include ITBMS.">Los precios no incluyen ITBMS.</li>
+            <li data-es="&lt;strong&gt;Los precios no incluyen el ITBMS (7%).&lt;/strong&gt;" data-en="&lt;strong&gt;Prices do not include ITBMS (7%).&lt;/strong&gt;"><strong>Los precios no incluyen el ITBMS (7%).</strong></li>
             <li data-es="La vigencia de los paquetes inicia a partir de la fecha de activaci&oacute;n." data-en="Package validity starts from the activation date.">La vigencia de los paquetes inicia a partir de la fecha de activaci&oacute;n.</li>
             <li data-es="La activaci&oacute;n del paquete se debe realizar hasta 2 meses despu&eacute;s de haberse adquirido, para evitar que este venza." data-en="The package must be activated within 2 months of purchase, or it will expire.">La activaci&oacute;n del paquete se debe realizar hasta 2 meses despu&eacute;s de haberse adquirido, para evitar que este venza.</li>
             <li data-es="Los paquetes de 1, 4 y 8 sesiones tienen una vigencia de hasta 30 d&iacute;as calendario para su uso luego de la activaci&oacute;n." data-en="Packages of 1, 4 and 8 sessions can be used for up to 30 calendar days after activation.">Los paquetes de 1, 4 y 8 sesiones tienen una vigencia de hasta 30 d&iacute;as calendario para su uso luego de la activaci&oacute;n.</li>
