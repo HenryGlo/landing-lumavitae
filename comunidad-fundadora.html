@@ -147,6 +147,9 @@
       box-shadow: 0 0 0 4px var(--rose-wash);
     }
     .inp:focus-within > svg { color: var(--rose-deep); }
+    /* Datos que llegan del enlace del correo de compra: se ven, no se editan. */
+    .inp input[readonly] { background: var(--cream-deep); color: #8A7F7C; cursor: not-allowed; }
+    .inp input[readonly]:focus { border-color: var(--cream-deep); background: var(--cream-deep); box-shadow: none; }
     input::placeholder, textarea::placeholder { color: #BDB6B3; }
     input[type="date"] { font-family: var(--font-brand); font-size: 0.96rem; }
     input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0.45; cursor: pointer; }
@@ -517,6 +520,40 @@
 
   function field(name) { return document.querySelector('[data-field="' + name + '"]'); }
 
+  /* ?alumna=1 es el enlace del correo de compra: quien lo abre ya pagó su
+     paquete, así que no se le pregunta qué plan quiere ni se le ofrece el
+     descuento de fundadora. Sólo queremos conocerla mejor. El envío lleva
+     `alumna: true` y el flow actualiza su ficha en vez de crear otra.
+     Nombre, correo y teléfono pueden venir en la URL (?nombre=…&correo=…
+     &telefono=…, o whatsapp=…), igual que en la tienda. En modo alumna
+     quedan de solo lectura: vienen de su ficha, y el correo es con lo que
+     el flow la encuentra; cambiarlo aquí crearía otra persona. */
+  var params = new URLSearchParams(window.location.search);
+  var isStudent = params.get('alumna') === '1';
+
+  [['nombre', 'nombre'], ['correo', 'correo'], ['whatsapp', 'telefono'], ['whatsapp', 'whatsapp']].forEach(function (pair) {
+    var input = form.elements[pair[0]];
+    var value = (params.get(pair[1]) || '').trim();
+    if (!value || !input) return;
+    input.value = value;
+    if (isStudent) input.readOnly = true;
+  });
+
+  if (isStudent) {
+    field('plan').closest('.step').remove();
+    Array.prototype.forEach.call(document.querySelectorAll('.step-n'), function (n, i) { n.textContent = i + 1; });
+
+    var head = document.querySelector('.head');
+    head.querySelector('h1').textContent = 'Queremos conocerte un poco más';
+    head.querySelector('.intro').textContent =
+      'Gracias por tu compra. Con estas respuestas tu instructora prepara tus clases pensando en ti.';
+    head.querySelector('.perks').remove();
+    document.querySelector('.foot .note').remove();
+    document.querySelector('#done h2').textContent = '¡Gracias por contarnos!';
+    document.querySelector('#done p').textContent = 'Recibimos tus respuestas. Nos vemos pronto en el estudio.';
+    document.title = 'Cuéntanos de ti · Lumavitae';
+  }
+
   /* Los bloques de paquete se muestran según el plan. El que se oculta se
      limpia: si alguien elige privadas y luego dúo, no puede viajar el paquete
      de la primera elección. */
@@ -589,7 +626,9 @@
     if (!picked('experiencia')) bad = setError('experiencia', 'Elige una opción.') || bad;
 
     var plan = form.querySelector('input[name="plan"]:checked');
-    if (!plan) {
+    if (isStudent) {
+      /* Ya compró: el paso del plan no está en la página. */
+    } else if (!plan) {
       bad = setError('plan', 'Elige el plan que te interesa.') || bad;
     } else {
       var key = plan.getAttribute('data-pack');
@@ -609,7 +648,7 @@
 
   function payload() {
     var plan = form.querySelector('input[name="plan"]:checked');
-    var key = plan.getAttribute('data-pack');
+    var key = plan ? plan.getAttribute('data-pack') : null;
     var objetivos = Array.prototype.slice
       .call(form.querySelectorAll('input[name="objetivos"]:checked'))
       .map(function (c) { return c.value; });
@@ -619,15 +658,16 @@
       whatsapp: val('whatsapp'),
       correo: val('correo'),
       experiencia_pilates: picked('experiencia'),
-      plan: plan.value,
-      paquete: key === 'orientacion' ? '' : picked('paquete_' + key),
+      plan: plan ? plan.value : '',
+      paquete: !key || key === 'orientacion' ? '' : picked('paquete_' + key),
       consulta: key === 'orientacion' ? val('consulta') : '',
       objetivos: objetivos,
       notas: val('notas'),
       como_nos_conocio: picked('conociste'),
       confirmacion: true,
       enviado_en: new Date().toISOString(),
-      origen: 'comunidad-fundadora'
+      origen: 'comunidad-fundadora',
+      alumna: isStudent
     };
   }
 
