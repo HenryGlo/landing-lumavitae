@@ -520,16 +520,17 @@
 
   function field(name) { return document.querySelector('[data-field="' + name + '"]'); }
 
-  /* ?alumna=1 es el enlace del correo de compra: quien lo abre ya pagó su
+  /* ?alumno=1 es el enlace del correo de compra: quien lo abre ya pagó su
      paquete, así que no se le pregunta qué plan quiere ni se le ofrece el
-     descuento de fundadora. Sólo queremos conocerla mejor. El envío lleva
-     `alumna: true` y el flow actualiza su ficha en vez de crear otra.
+     descuento de fundador. Sólo queremos conocerle mejor. El envío lleva
+     `alumno: true` y el flow actualiza su ficha en vez de crear otra.
+     Los correos ya enviados traen ?alumna=1: se sigue aceptando.
      Nombre, correo y teléfono pueden venir en la URL (?nombre=…&correo=…
-     &telefono=…, o whatsapp=…), igual que en la tienda. En modo alumna
+     &telefono=…, o whatsapp=…), igual que en la tienda. En modo alumno
      quedan de solo lectura: vienen de su ficha, y el correo es con lo que
-     el flow la encuentra; cambiarlo aquí crearía otra persona. */
+     el flow encuentra su ficha; cambiarlo aquí crearía otra persona. */
   var params = new URLSearchParams(window.location.search);
-  var isStudent = params.get('alumna') === '1';
+  var isStudent = params.get('alumno') === '1' || params.get('alumna') === '1';
 
   [['nombre', 'nombre'], ['correo', 'correo'], ['whatsapp', 'telefono'], ['whatsapp', 'whatsapp']].forEach(function (pair) {
     var input = form.elements[pair[0]];
@@ -546,7 +547,7 @@
     var head = document.querySelector('.head');
     head.querySelector('h1').textContent = 'Queremos conocerte un poco más';
     head.querySelector('.intro').textContent =
-      'Gracias por tu compra. Con estas respuestas tu instructora prepara tus clases pensando en ti.';
+      'Gracias por tu compra. Con estas respuestas tus instructores preparan tus clases pensando en ti.';
     head.querySelector('.perks').remove();
     document.querySelector('.foot .note').remove();
     document.querySelector('#done h2').textContent = '¡Gracias por contarnos!';
@@ -667,6 +668,9 @@
       confirmacion: true,
       enviado_en: new Date().toISOString(),
       origen: 'comunidad-fundadora',
+      alumno: isStudent,
+      /* La clave vieja, para los pasos de Activepieces que todavía la leen.
+         Se puede quitar cuando el 04 y el 05 nuevos estén pegados. */
       alumna: isStudent
     };
   }
