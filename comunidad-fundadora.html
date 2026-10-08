@@ -154,6 +154,30 @@
     input[type="date"] { font-family: var(--font-brand); font-size: 0.96rem; }
     input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0.45; cursor: pointer; }
 
+    /* ─── TELÉFONO ─── */
+    /* El select nativo va encima, transparente: el móvil abre su propia
+       lista, y en el campo sólo se ve la bandera y el código. */
+    .phone { display: grid; grid-template-columns: auto 1fr; gap: 0.5rem; }
+    .phone .inp input { padding-left: 1.1rem; }
+    .cc { position: relative; display: block; }
+    .cc-show {
+      display: flex; align-items: center; gap: 0.45rem; height: 100%;
+      font-family: var(--font-brand); font-size: 0.96rem; font-weight: 500; color: var(--text-dark);
+      background: var(--cream); border: 1.5px solid var(--cream-deep); border-radius: 16px;
+      padding: 0 0.85rem 0 1rem; white-space: nowrap;
+      transition: border-color 0.3s var(--ease), background 0.3s, box-shadow 0.3s;
+    }
+    .cc-flag { font-size: 1.2rem; line-height: 1; }
+    .cc-show svg { width: 15px; height: 15px; color: var(--rose); margin-left: 0.1rem; }
+    .cc select {
+      position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
+      font-size: 16px; /* evita el zoom de iOS al abrir */
+    }
+    .cc:focus-within .cc-show { border-color: var(--rose); background: #FFF; box-shadow: 0 0 0 4px var(--rose-wash); }
+    .cc select:disabled { cursor: not-allowed; }
+    .cc:has(select:disabled) .cc-show { background: var(--cream-deep); color: #8A7F7C; }
+    .field.bad .cc-show { border-color: #D49A9A; }
+
     /* ─── OPCIONES ─── */
     .opts { display: grid; gap: 0.5rem; }
     .opts.two { grid-template-columns: 1fr 1fr; }
@@ -361,9 +385,14 @@
 
         <div class="field" data-field="whatsapp">
           <label class="q" for="whatsapp">WhatsApp <span class="req">*</span><span class="hint">Por aqu&iacute; coordinamos tus clases.</span></label>
-          <span class="inp">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg>
-            <input type="tel" id="whatsapp" name="whatsapp" autocomplete="tel" placeholder="+507 6000 0000">
+          <span class="phone">
+            <span class="cc">
+              <span class="cc-show" aria-hidden="true"><span class="cc-flag" id="ccflag">🇵🇦</span><span id="cccode">+507</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+              <select id="pais" name="pais" autocomplete="tel-country-code" aria-label="Código de país"></select>
+            </span>
+            <span class="inp">
+              <input type="tel" id="whatsapp" name="whatsapp" autocomplete="tel-national" inputmode="tel" placeholder="6000 0000">
+            </span>
           </span>
         </div>
 
@@ -532,13 +561,106 @@
   var params = new URLSearchParams(window.location.search);
   var isStudent = params.get('alumno') === '1' || params.get('alumna') === '1';
 
+  /* Selector de país del WhatsApp. Panamá primero y luego los países de
+     donde más nos escriben; después, el resto en orden alfabético. */
+  var PAISES = [
+    ['PA','Panamá','507'],['VE','Venezuela','58'],['CO','Colombia','57'],['CR','Costa Rica','506'],
+    ['US','Estados Unidos','1'],['ES','España','34'],['MX','México','52'],['AR','Argentina','54'],
+    ['AL','Albania','355'],['DE','Alemania','49'],['AD','Andorra','376'],['AO','Angola','244'],
+    ['SA','Arabia Saudita','966'],['DZ','Argelia','213'],['AM','Armenia','374'],['AW','Aruba','297'],
+    ['AU','Australia','61'],['AT','Austria','43'],['BS','Bahamas','1'],['BD','Bangladés','880'],
+    ['BB','Barbados','1'],['BE','Bélgica','32'],['BZ','Belice','501'],['BY','Bielorrusia','375'],
+    ['BO','Bolivia','591'],['BA','Bosnia y Herzegovina','387'],['BR','Brasil','55'],['BG','Bulgaria','359'],
+    ['CV','Cabo Verde','238'],['CA','Canadá','1'],['QA','Catar','974'],['CL','Chile','56'],
+    ['CN','China','86'],['CY','Chipre','357'],['KR','Corea del Sur','82'],['HR','Croacia','385'],
+    ['CU','Cuba','53'],['CW','Curazao','599'],['DK','Dinamarca','45'],['DM','Dominica','1'],
+    ['EC','Ecuador','593'],['EG','Egipto','20'],['SV','El Salvador','503'],['AE','Emiratos Árabes Unidos','971'],
+    ['SK','Eslovaquia','421'],['SI','Eslovenia','386'],['EE','Estonia','372'],['PH','Filipinas','63'],
+    ['FI','Finlandia','358'],['FR','Francia','33'],['GE','Georgia','995'],['GH','Ghana','233'],
+    ['GR','Grecia','30'],['GD','Granada','1'],['GT','Guatemala','502'],['GY','Guyana','592'],
+    ['HT','Haití','509'],['HN','Honduras','504'],['HK','Hong Kong','852'],['HU','Hungría','36'],
+    ['IN','India','91'],['ID','Indonesia','62'],['IE','Irlanda','353'],['IS','Islandia','354'],
+    ['IL','Israel','972'],['IT','Italia','39'],['JM','Jamaica','1'],['JP','Japón','81'],
+    ['JO','Jordania','962'],['KZ','Kazajistán','7'],['KE','Kenia','254'],['KW','Kuwait','965'],
+    ['LV','Letonia','371'],['LB','Líbano','961'],['LT','Lituania','370'],['LU','Luxemburgo','352'],
+    ['MY','Malasia','60'],['MT','Malta','356'],['MA','Marruecos','212'],['MD','Moldavia','373'],
+    ['MC','Mónaco','377'],['ME','Montenegro','382'],['NI','Nicaragua','505'],['NG','Nigeria','234'],
+    ['NO','Noruega','47'],['NZ','Nueva Zelanda','64'],['NL','Países Bajos','31'],['PK','Pakistán','92'],
+    ['PY','Paraguay','595'],['PE','Perú','51'],['PL','Polonia','48'],['PT','Portugal','351'],
+    ['PR','Puerto Rico','1'],['GB','Reino Unido','44'],['CZ','República Checa','420'],['DO','República Dominicana','1'],
+    ['RO','Rumania','40'],['RU','Rusia','7'],['RS','Serbia','381'],['SG','Singapur','65'],
+    ['ZA','Sudáfrica','27'],['SE','Suecia','46'],['CH','Suiza','41'],['SR','Surinam','597'],
+    ['TH','Tailandia','66'],['TW','Taiwán','886'],['TT','Trinidad y Tobago','1'],['TN','Túnez','216'],
+    ['TR','Turquía','90'],['UA','Ucrania','380'],['UY','Uruguay','598'],['VN','Vietnam','84']
+  ];
+  var pais = form.elements.pais;
+  function flag(iso) {
+    return String.fromCodePoint.apply(null, iso.split('').map(function (c) { return 0x1F1A5 + c.charCodeAt(0); }));
+  }
+  PAISES.forEach(function (c, i) {
+    var o = document.createElement('option');
+    o.value = c[0];
+    o.textContent = flag(c[0]) + '  ' + c[1] + ' (+' + c[2] + ')';
+    pais.appendChild(o);
+    if (i === 7) {
+      var sep = document.createElement('option');
+      sep.disabled = true;
+      sep.textContent = '──────────';
+      pais.appendChild(sep);
+    }
+  });
+  function dial() {
+    for (var i = 0; i < PAISES.length; i++) if (PAISES[i][0] === pais.value) return PAISES[i][2];
+    return '507';
+  }
+  function syncCountry() {
+    document.getElementById('ccflag').textContent = flag(pais.value);
+    document.getElementById('cccode').textContent = '+' + dial();
+  }
+  pais.addEventListener('change', syncCountry);
+
+  /* Un teléfono que llega completo (+58 412…) se reparte entre el selector y
+     el campo. Gana el código más largo que coincida, y entre los que
+     comparten código (+1) el primero de la lista. */
+  function splitPhone(value) {
+    var digits = value.replace(/[^\d+]/g, '');
+    if (digits.charAt(0) !== '+') return false;
+    digits = digits.slice(1);
+    var best = null;
+    PAISES.forEach(function (c) {
+      if (digits.indexOf(c[2]) === 0 && (!best || c[2].length > best[2].length)) best = c;
+    });
+    if (!best) return false;
+    pais.value = best[0];
+    form.elements.whatsapp.value = digits.slice(best[2].length);
+    return true;
+  }
+
   [['nombre', 'nombre'], ['correo', 'correo'], ['whatsapp', 'telefono'], ['whatsapp', 'whatsapp']].forEach(function (pair) {
     var input = form.elements[pair[0]];
     var value = (params.get(pair[1]) || '').trim();
     if (!value || !input) return;
-    input.value = value;
-    if (isStudent) input.readOnly = true;
+    if (pair[0] !== 'whatsapp' || !splitPhone(value)) input.value = value;
+    if (isStudent) {
+      input.readOnly = true;
+      if (pair[0] === 'whatsapp') pais.disabled = true;
+    }
   });
+  syncCountry();
+
+  /* Si pegan el número con su +código en el campo, también se reparte. */
+  form.elements.whatsapp.addEventListener('blur', function () {
+    if (this.readOnly) return;
+    if (splitPhone(this.value)) syncCountry();
+  });
+
+  /* Lo que viaja al flow: +código y el número sin espacios ni guiones. */
+  function fullPhone() {
+    var n = val('whatsapp');
+    if (!n) return '';
+    if (n.charAt(0) === '+') return '+' + n.replace(/\D/g, '');
+    return '+' + dial() + n.replace(/\D/g, '').replace(/^0+/, '');
+  }
 
   if (isStudent) {
     field('plan').closest('.step').remove();
@@ -621,6 +743,7 @@
     ].forEach(function (n) {
       if (!val(n[0])) bad = setError(n[0], n[1]) || bad;
     });
+    if (val('whatsapp') && val('whatsapp').replace(/\D/g, '').length < 6) bad = setError('whatsapp', 'Revisa el número: parece incompleto.') || bad;
     var correo = val('correo');
     if (correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) bad = setError('correo', 'Revisa el correo: parece incompleto.') || bad;
 
@@ -656,7 +779,8 @@
     return {
       nombre: val('nombre'),
       fecha_nacimiento: val('nacimiento'),
-      whatsapp: val('whatsapp'),
+      whatsapp: fullPhone(),
+      pais_telefono: pais.value,
       correo: val('correo'),
       experiencia_pilates: picked('experiencia'),
       plan: plan ? plan.value : '',
