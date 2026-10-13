@@ -210,6 +210,7 @@
     .opt:has(input:focus-visible) { border-color: var(--rose-deep); box-shadow: 0 0 0 4px var(--rose-wash); }
     .opt .oic { width: 19px; height: 19px; color: var(--rose-deep); }
     .opt .txt { flex: 1; }
+    .opt .txt a { color: var(--rose-deep); text-decoration: underline; text-underline-offset: 2px; }
 
     /* ─── PAQUETES ─── */
     .pack {
@@ -502,6 +503,15 @@
             <label class="opt"><input type="checkbox" name="confirmacion" value="si"><span class="mark"></span><span class="txt">Confirmo que mis datos son correctos y acepto las pol&iacute;ticas de Lumavitae.</span></label>
           </div>
         </fieldset>
+
+        <!-- La aceptación queda guardada en la ficha de la alumna con su fecha y
+             con la versión del texto (TERMS_VERSION, más abajo). -->
+        <fieldset class="field" data-field="terminos">
+          <legend class="q">T&eacute;rminos y asunci&oacute;n de riesgo <span class="req">*</span></legend>
+          <div class="opts">
+            <label class="opt"><input type="checkbox" name="terminos" value="si"><span class="mark"></span><span class="txt">He le&iacute;do y acepto los <a href="terminos.html" target="_blank" rel="noopener">T&eacute;rminos, Condiciones y Asunci&oacute;n de Riesgo</a> de Lumavitae.</span></label>
+          </div>
+        </fieldset>
       </section>
 
       <div class="hp" aria-hidden="true">
@@ -539,6 +549,10 @@
 <script>
   /* El flow de Activepieces que recibe cada registro. */
   var WEBHOOK_URL = 'https://cloud.activepieces.com/api/v1/webhooks/Y4Bz9vtCDYYPY10dEQpzC';
+  /* La fecha de «Última actualización» de terminos.html. Viaja con el registro
+     para saber qué texto tenía delante quien aceptó: si cambian los términos,
+     se cambia la fecha allá y acá. */
+  var TERMS_VERSION = '2026-10-13';
 
   var form = document.getElementById('form');
   var done = document.getElementById('done');
@@ -766,6 +780,7 @@
     if (!form.querySelectorAll('input[name="objetivos"]:checked').length) bad = setError('objetivos', 'Marca al menos una opción.') || bad;
     if (!picked('conociste')) bad = setError('conociste', 'Elige una opción.') || bad;
     if (!form.querySelector('input[name="confirmacion"]').checked) bad = setError('confirmacion', 'Confirma para poder enviar tu registro.') || bad;
+    if (!form.querySelector('input[name="terminos"]').checked) bad = setError('terminos', 'Acepta los términos para poder enviar tu registro.') || bad;
 
     return bad;
   }
@@ -790,6 +805,8 @@
       notas: val('notas'),
       como_nos_conocio: picked('conociste'),
       confirmacion: true,
+      terminos: true,
+      terminos_version: TERMS_VERSION,
       enviado_en: new Date().toISOString(),
       origen: 'comunidad-fundadora',
       alumno: isStudent,
