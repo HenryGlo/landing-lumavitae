@@ -32,7 +32,11 @@ The flow reuses an exact-email student without modifying that student's profile.
 If no student exists it creates one; a conflicting phone requires studio review.
 Every inscription retains the event answers and links to its student and event.
 Redis locks and a stable event/email registration reference prevent duplicate
-submissions. No mail, WhatsApp, payment or package credit is sent/created here.
+submissions. The flow itself sends no mail, WhatsApp or payment and creates no package credit.
+A native Communications rule on Event Registration sends the event receipt. The
+founder welcome is limited to student origin `comunidad-fundadora`; event
+participants must not enter that campaign. The event registration keeps its
+base email so the native rule can address both new and returning students.
 
 Before publishing, validate the artifact against the source, import it as a draft,
 verify execution with an owned QA address, verify links and repeated submission,

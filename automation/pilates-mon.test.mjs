@@ -32,7 +32,7 @@ test('creates and links a new student and event registration with fixed tenant a
  const s=setup();const result=await s.handler(input({...sample(),tenantHost:'other.perfectflow.cloud'}));assert.equal(result.status,200);
  const creates=s.calls.filter(c=>c.options.method==='POST');assert.equal(creates.length,2);assert.deepEqual(creates[1].body.record.subject_links,{inscripcion_alumna:17,inscripcion_evento:4501});
  for(const call of s.calls){assert.equal(call.options.headers.Host,'pilates-luma-vitae.perfectflow.cloud');assert.equal(call.options.headers['X-Forwarded-Host'],'pilates-luma-vitae.perfectflow.cloud');assert.ok(call.options.headers.Authorization.startsWith('Basic '));}
- assert.equal(creates[1].body.record.custom_fields.acepta_terminos,true);assert.equal(creates[1].body.record.custom_fields.terminos_version,'2026-10-13');
+ assert.equal(creates[1].body.record.email,sample().correo);assert.equal(creates[1].body.record.custom_fields.acepta_terminos,true);assert.equal(creates[1].body.record.custom_fields.terminos_version,'2026-10-13');
 });
 test('reuses an existing exact-email student without editing their profile',async()=>{
  const s=setup({students:[{id:29,email:sample().correo,full_name:'Nombre guardado',phone:'+50769999999'}]});assert.equal((await s.handler(input(sample()))).status,200);
