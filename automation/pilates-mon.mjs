@@ -99,7 +99,7 @@ export function makeHandler({state=redis,request=fetch,now=()=>new Date()}={}){
      custom_fields:{nacimiento:form.birth,a_considerar:form.notes,origen:'evento:'+eventCode,acepta_politicas:true}}},'pilates-mon-student-'+digest(form.email));
     if(String(student.email||'').trim().toLowerCase()!==form.email)return reply(409,'Necesitamos revisar tus datos. Escríbenos por WhatsApp.');
    }
-   const registration=await call('POST','/records/Entity?model=inscripcion_evento',{record:{full_name:form.name,phone:form.phone,subject_links:{inscripcion_alumna:student.id,inscripcion_evento:event.id},custom_fields:{
+   const registration=await call('POST','/records/Entity?model=inscripcion_evento',{record:{full_name:form.name,email:form.email,phone:form.phone,subject_links:{inscripcion_alumna:student.id,inscripcion_evento:event.id},custom_fields:{
     event_code:eventCode,email_participante:form.email,fecha_nacimiento:form.birth,experiencia_pilates:form.experience,
     a_considerar:form.notes,como_supiste:form.source,acepta_politicas:true,acepta_terminos:true,terminos_version:form.terms,
     registrado_en:now().toISOString(),origen:'landing:pilates-mon',registration_key:key}}},'pilates-mon-registration-'+key);
