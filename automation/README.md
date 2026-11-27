@@ -47,9 +47,10 @@ restore the event opening state and verify the public closed-state/CORS response
 
 Saturday 05/12/2026, four slots of 1 h 20 min (7:10, 8:40, 10:10, 11:40), five
 people each (`SLOTS`, `CAPACITY`). `status` returns each slot's spots left.
-Spots are counted on that day's appointments whose note starts with
-«Pilates Mom» and that are not cancelled, so cancelling an appointment frees
-the spot. A Redis lock per slot stops two people from taking the last spot at
+Spots are counted on that day's appointments that last 80 minutes (regular
+classes last 50), sit exactly on a slot and are not cancelled, so cancelling
+an appointment frees the spot. The appointments API stores no notes (sending
+`notes` returned a 500), so the duration is the mark. A Redis lock per slot stops two people from taking the last spot at
 once. Each registration stores `horario` and creates the appointment in its
 initial state (reserved), linked to the student through `sesion_alumnos`. The
 studio confirms it after payment. The event's `booking_url` points to the
