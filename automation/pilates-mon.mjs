@@ -25,19 +25,22 @@ const release="if redis.call('GET',KEYS[1])==ARGV[1] then return redis.call('DEL
 const rate="local n=redis.call('INCR',KEYS[1]);if n==1 then redis.call('EXPIRE',KEYS[1],3600) end;return n";
 const yes=value=>value===true;
 // Sábado 05/12/2026 en Panamá (UTC-5). Cada horario dura 1 h 20 min, clase y compartir.
-// Los cupos se cuentan sobre las citas de ese día que llevan MARK en la nota y no
-// están canceladas: si el estudio cancela una cita, el cupo vuelve solo.
+// Los cupos se cuentan sobre las citas de ese día que duran DURATION (80 min, las
+// clases normales duran 50) a la hora exacta de un horario y no están canceladas:
+// si el estudio cancela una cita, el cupo vuelve solo. La API de citas no guarda
+// notas, así que la marca es la duración.
 export const SLOTS=[
  {id:'07:10',label:'7:10 a 8:30 am',time:'2026-12-05T07:10:00-05:00'},
  {id:'08:40',label:'8:40 a 10:00 am',time:'2026-12-05T08:40:00-05:00'},
  {id:'10:10',label:'10:10 a 11:30 am',time:'2026-12-05T10:10:00-05:00'},
  {id:'11:40',label:'11:40 am a 1:00 pm',time:'2026-12-05T11:40:00-05:00'}];
-export const CAPACITY=5,DURATION=80,MARK='Pilates Mom',STUDENT_RELATION='sesion_alumnos';
+export const CAPACITY=5,DURATION=80,STUDENT_RELATION='sesion_alumnos';
+const isEvent=appointment=>appointment.state!=='cancelled'&&Number(appointment.attributes?.duration_minutes)===DURATION;
 const slotOf=id=>SLOTS.find(slot=>slot.id===id);
 export function occupancy(appointments){
  const taken=Object.fromEntries(SLOTS.map(slot=>[slot.id,0]));
  for(const appointment of appointments||[]){
-  if(appointment.state==='cancelled'||!String(appointment.attributes?.notes||'').startsWith(MARK))continue;
+  if(!isEvent(appointment))continue;
   const at=new Date(appointment.attributes?.time).getTime();
   const slot=SLOTS.find(item=>new Date(item.time).getTime()===at);if(slot)taken[slot.id]++;
  }
@@ -100,9 +103,9 @@ export function makeHandler({state=redis,request=fetch,now=()=>new Date()}={}){
    for(const lock of locks){if(!await state('SET',lock,owner,'NX','EX',180))return reply(503,'Estamos procesando tu registro. Intenta de nuevo en unos segundos.');held.push(lock);}
    const call=crm(inputs,request,value=>{stage=value;});
    const slot=slotOf(form.slot);
-   const book=student=>call('POST','/records/Appointment',{record:{time:slot.time,duration_minutes:DURATION,
-    notes:MARK+' · '+slot.label+' · '+form.name+' · '+form.email+' · pendiente de pago',subject_links:{[STUDENT_RELATION]:[student]}}},'pilates-mon-appointment-'+key+'-'+slot.id);
-   const hasBooking=(appointments,student)=>(appointments||[]).some(item=>item.state!=='cancelled'&&String(item.attributes?.notes||'').startsWith(MARK)&&linked(item,STUDENT_RELATION,student));
+   const book=(student,at=slot)=>call('POST','/records/Appointment',{record:{time:at.time,duration_minutes:DURATION,
+    subject_links:{[STUDENT_RELATION]:[student]}}},'pilates-mon-appointment-'+key+'-'+at.id);
+   const hasBooking=(appointments,student)=>(appointments||[]).some(item=>isEvent(item)&&linked(item,STUDENT_RELATION,student));
    const events=await call('GET','/records/Entity?model=evento&event_code='+eventCode+'&limit=2');
    if(events.records?.length!==1)return reply(503,'El registro todavía no está disponible.');
    const event=events.records[0],settings=event.custom_fields||{};
@@ -117,8 +120,7 @@ export function makeHandler({state=redis,request=fetch,now=()=>new Date()}={}){
     const saved=slotOf(existing.records[0].custom_fields?.horario)||slot;
     if(!hasBooking(appointments,studentId)){
      if(occupancy(appointments).find(item=>item.id===saved.id).remaining<1)return reply(409,'Ese horario se completó. Escríbenos por WhatsApp y te ayudamos a cambiarlo.',{slots:occupancy(appointments)});
-     await call('POST','/records/Appointment',{record:{time:saved.time,duration_minutes:DURATION,
-      notes:MARK+' · '+saved.label+' · '+form.name+' · '+form.email+' · pendiente de pago',subject_links:{[STUDENT_RELATION]:[studentId]}}},'pilates-mon-appointment-'+key+'-'+saved.id);
+     await book(studentId,saved);
     }
     return reply(200,'Tu registro ya está guardado.',{booking_url:bookingURL,slot:saved.label});
    }

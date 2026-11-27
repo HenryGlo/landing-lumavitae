@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {makeHandler,validate,occupancy,SLOTS} from './pilates-mon.mjs';
 const sample=()=>({nombre:'Prueba Pilates Mon',fecha_nacimiento:'1990-06-15',whatsapp:'+50760001234',correo:'henrylofiego+pf-mothers-qa@gmail.com',experiencia_pilates:'No, nunca.',notas:'',como_supiste_del_evento:'Instagram',confirmacion:true,terminos:true,terminos_version:'2026-10-13',horario:'07:10'});
-const booked=(slot,student,state='booked',notes='Pilates Mom · x')=>({id:Math.floor(Math.random()*1e6),state,attributes:{time:new Date(SLOTS.find(s=>s.id===slot).time).toISOString(),notes},relations:{sesion_alumnos:{records:[{id:student}]}}});
+const booked=(slot,student,state='booked',duration=80)=>({id:Math.floor(Math.random()*1e6),state,attributes:{time:new Date(SLOTS.find(s=>s.id===slot).time).toISOString(),duration_minutes:duration},relations:{sesion_alumnos:{records:[{id:student}]}}});
 function setup({open=true,students=[],existing=[],badRegistration=false,failCreate=false,appointments=[],failAppointment=false}={}){
  const calls=[],stateCalls=[];let registrations=existing;let agenda=[...appointments];
  const state=async(...args)=>{stateCalls.push(args);return args[0]==='SET'?'OK':args[0]==='EVAL'&&args[1].includes('INCR')?1:1;};
@@ -10,7 +10,7 @@ function setup({open=true,students=[],existing=[],badRegistration=false,failCrea
   const body=options.body?JSON.parse(options.body):null;calls.push({url,options,body});let result;
   if(url.includes('model=evento'))result={records:[{id:4501,custom_fields:{registro_abierto:open,booking_url:'https://pilates-luma-vitae.perfectflow.cloud/es/book?fijar=100'}}]};
   else if(url.includes('/records/Appointment')&&options.method==='GET')result={records:agenda};
-  else if(url.includes('/records/Appointment')){if(failAppointment)return {ok:false,status:422};result={id:90,state:'booked',attributes:{time:new Date(body.record.time).toISOString(),notes:body.record.notes},relations:{sesion_alumnos:{records:body.record.subject_links.sesion_alumnos.map(id=>({id}))}}};agenda=[...agenda,result];}
+  else if(url.includes('/records/Appointment')){if(failAppointment)return {ok:false,status:422};result={id:90,state:'booked',attributes:{time:new Date(body.record.time).toISOString(),duration_minutes:body.record.duration_minutes},relations:{sesion_alumnos:{records:body.record.subject_links.sesion_alumnos.map(id=>({id}))}}};agenda=[...agenda,result];}
   else if(url.includes('model=inscripcion_evento')&&options.method==='GET')result={records:registrations};
   else if(url.includes('model=alumno')&&options.method==='GET')result={records:students};
   else if(url.includes('model=alumno'))result={id:17,...body.record};
@@ -34,7 +34,7 @@ test('a closed event creates no student or registration',async()=>{const s=setup
 test('creates and links a new student and event registration with fixed tenant and server token',async()=>{
  const s=setup();const result=await s.handler(input({...sample(),tenantHost:'other.perfectflow.cloud'}));assert.equal(result.status,200);
  const creates=s.calls.filter(c=>c.options.method==='POST');assert.equal(creates.length,3);assert.equal(creates[1].body.record.custom_fields.horario,'07:10');
- assert.equal(creates[2].body.record.time,'2026-12-05T07:10:00-05:00');assert.equal(creates[2].body.record.duration_minutes,80);assert.deepEqual(creates[2].body.record.subject_links,{sesion_alumnos:[17]});assert.ok(creates[2].body.record.notes.startsWith('Pilates Mom · 7:10 a 8:30 am'));assert.deepEqual(creates[1].body.record.subject_links,{inscripcion_alumna:17,inscripcion_evento:4501});
+ assert.equal(creates[2].body.record.time,'2026-12-05T07:10:00-05:00');assert.equal(creates[2].body.record.duration_minutes,80);assert.deepEqual(creates[2].body.record.subject_links,{sesion_alumnos:[17]});assert.equal(creates[2].body.record.notes,undefined);assert.deepEqual(creates[1].body.record.subject_links,{inscripcion_alumna:17,inscripcion_evento:4501});
  for(const call of s.calls){assert.equal(call.options.headers.Host,'pilates-luma-vitae.perfectflow.cloud');assert.equal(call.options.headers['X-Forwarded-Host'],'pilates-luma-vitae.perfectflow.cloud');assert.ok(call.options.headers.Authorization.startsWith('Basic '));}
  assert.equal(creates[1].body.record.email,sample().correo);assert.equal(creates[1].body.record.custom_fields.acepta_terminos,true);assert.equal(creates[1].body.record.custom_fields.terminos_version,'2026-10-13');
 });
@@ -50,12 +50,12 @@ test('missing persisted links fail instead of claiming a successful registration
 test('invalid payloads never write and honeypots do not reach the CRM',async()=>{const s=setup();assert.equal((await s.handler(input({}))).status,422);assert.equal((await s.handler(input({...sample(),website:'bot'}))).status,200);assert.equal(s.calls.length,0);});
 test('status says if registration is open and, when open, the spots left per slot, without creating records',async()=>{
  const closed=setup({open:false});const off=await closed.handler(input({action:'status'}));assert.equal(off.result.registration_open,false);assert.equal(off.result.slots,undefined);assert.equal(closed.calls.length,1);
- const s=setup({appointments:[booked('07:10',1),booked('07:10',2),booked('08:40',3,'cancelled'),booked('10:10',4,'booked','Clase Reformer')]});
+ const s=setup({appointments:[booked('07:10',1),booked('07:10',2),booked('08:40',3,'cancelled'),booked('10:10',4,'booked',50)]});
  const result=await s.handler(input({action:'status'}));assert.equal(result.status,200);assert.equal(result.result.registration_open,true);
  assert.deepEqual(result.result.slots.map(x=>x.remaining),[3,5,5,5]);assert.ok(s.calls.every(c=>c.options.method==='GET'));assert.equal(result.result.records,undefined);
 });
-test('counts only non-cancelled Pilates Mom appointments in each slot',()=>{
- const slots=occupancy([booked('11:40',1),booked('11:40',2,'cancelled'),booked('11:40',3,'booked','Otra cosa'),booked('08:40',4)]);
+test('counts only non-cancelled 80-minute appointments in each slot',()=>{
+ const slots=occupancy([booked('11:40',1),booked('11:40',2,'cancelled'),booked('11:40',3,'booked',50),booked('08:40',4)]);
  assert.deepEqual(slots.map(x=>[x.id,x.remaining]),[['07:10',5],['08:40',4],['10:10',5],['11:40',4]]);
 });
 test('rejects a missing or unknown slot',()=>{for(const horario of ['', '09:00', undefined]){assert.equal(validate({...sample(),horario}),null);}});
