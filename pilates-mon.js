@@ -62,6 +62,20 @@ const config = {webhook: 'https://lite-nyc1-d8b48383.automation.perfectflow.clou
   pais.addEventListener('change', syncCountry);
 syncCountry();
 let registrationOpen=false;
+const slotsBox=document.getElementById('slots');
+function renderSlots(slots){
+ slotsBox.textContent='';
+ if(!Array.isArray(slots)||!slots.length){const p=document.createElement('p');p.className='note';p.textContent='Los horarios se publican al abrir el registro.';slotsBox.appendChild(p);return;}
+ const chosen=choice('horario');
+ for(const slot of slots){
+  const label=document.createElement('label');label.className='opt'+(slot.remaining<1?' full':'');
+  const input=document.createElement('input');input.type='radio';input.name='horario';input.value=slot.id;input.required=true;input.disabled=slot.remaining<1;input.checked=chosen===slot.id&&slot.remaining>0;
+  const mark=document.createElement('span');mark.className='mark';
+  const txt=document.createElement('span');txt.className='txt';txt.textContent=slot.label;
+  const left=document.createElement('span');left.className='left';left.textContent=slot.remaining<1?'completo':slot.remaining===1?'queda 1 cupo':'quedan '+slot.remaining+' cupos';
+  label.append(input,mark,txt,left);slotsBox.appendChild(label);
+ }
+}
 const status=document.getElementById('registration-status');
 const retry=document.querySelector('[data-action="retry-registration"]');
 async function loadStatus(){
@@ -69,14 +83,14 @@ async function loadStatus(){
  try{
   const response=await fetch(config.webhook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'status'}),signal:AbortSignal.timeout(25000)});
   const result=await response.json();if(!response.ok||!result.ok)throw new Error();
-  registrationOpen=result.registration_open===true;button.disabled=!registrationOpen;status.textContent=result.message;
+  registrationOpen=result.registration_open===true;button.disabled=!registrationOpen;status.textContent=result.message;renderSlots(result.slots);
  }catch{registrationOpen=false;status.textContent='No pudimos consultar el registro. Intenta de nuevo.';retry.hidden=false;}
 }
 retry.addEventListener('click',loadStatus);loadStatus();
 const notes=form.elements.notas;
 notes.addEventListener('input',()=>{notes.style.height='auto';notes.style.height=Math.min(notes.scrollHeight,320)+'px';});
 const value = name => String(form.elements[name]?.value || '').trim();
-const choice = name => form.querySelector(`input[name="${name}"]:checked`)?.value || '';
+function choice(name){return form.querySelector(`input[name="${name}"]:checked`)?.value || '';}
 form.querySelectorAll('input').forEach(input => {
  if (['nombre','nacimiento','whatsapp','correo','experiencia','conociste','confirmacion','terminos'].includes(input.name)) input.required = true;
 });
@@ -90,11 +104,13 @@ form.addEventListener('submit', async event => {
  button.disabled = true; document.getElementById('sendtxt').textContent = 'enviando…';
  const rawPhone=value('whatsapp');
  const phone=rawPhone.startsWith('+')?'+'+rawPhone.replace(/\D/g,''):'+'+dial()+rawPhone.replace(/\D/g,'');
- const data = {nombre:value('nombre'),fecha_nacimiento:value('nacimiento'),whatsapp:phone,correo:value('correo').toLowerCase(),experiencia_pilates:choice('experiencia'),notas:value('notas'),como_supiste_del_evento:choice('conociste'),confirmacion:form.elements.confirmacion.checked,terminos:form.elements.terminos.checked,terminos_version:config.terms,website:value('website')};
+ const data = {nombre:value('nombre'),fecha_nacimiento:value('nacimiento'),whatsapp:phone,correo:value('correo').toLowerCase(),experiencia_pilates:choice('experiencia'),notas:value('notas'),como_supiste_del_evento:choice('conociste'),confirmacion:form.elements.confirmacion.checked,terminos:form.elements.terminos.checked,terminos_version:config.terms,horario:choice('horario'),website:value('website')};
  try {
   const response = await fetch(config.webhook, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data), signal:AbortSignal.timeout(25000)});
   const result = await response.json();
+  if (Array.isArray(result.slots)) renderSlots(result.slots);
   if (!response.ok || result.ok !== true) throw new Error(result.message || 'No pudimos guardar tu registro. Intenta de nuevo.');
+  if (result.slot) document.getElementById('done-text').textContent='Apartamos tu lugar el sábado 05 de diciembre, '+result.slot+'. Queda confirmado cuando recibamos tu pago.';
   form.hidden = true; done.hidden = false;
   if (result.booking_url) { const link = document.getElementById('booking-link'); const url = new URL(result.booking_url); if (url.protocol === 'https:') {link.href=url.href;link.hidden=false;} }
   done.focus(); done.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});

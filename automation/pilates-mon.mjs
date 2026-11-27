@@ -24,6 +24,36 @@ const reply=(status,message,extra={})=>({status,result:{ok:status===200,message,
 const release="if redis.call('GET',KEYS[1])==ARGV[1] then return redis.call('DEL',KEYS[1]) end;return 0";
 const rate="local n=redis.call('INCR',KEYS[1]);if n==1 then redis.call('EXPIRE',KEYS[1],3600) end;return n";
 const yes=value=>value===true;
+// Sábado 05/12/2026 en Panamá (UTC-5). Cada horario dura 1 h 20 min, clase y compartir.
+// Los cupos se cuentan sobre las citas de ese día que llevan MARK en la nota y no
+// están canceladas: si el estudio cancela una cita, el cupo vuelve solo.
+export const SLOTS=[
+ {id:'07:10',label:'7:10 a 8:30 am',time:'2026-12-05T07:10:00-05:00'},
+ {id:'08:40',label:'8:40 a 10:00 am',time:'2026-12-05T08:40:00-05:00'},
+ {id:'10:10',label:'10:10 a 11:30 am',time:'2026-12-05T10:10:00-05:00'},
+ {id:'11:40',label:'11:40 am a 1:00 pm',time:'2026-12-05T11:40:00-05:00'}];
+export const CAPACITY=5,DURATION=80,MARK='Pilates Mom',STUDENT_RELATION='sesion_alumnos';
+const slotOf=id=>SLOTS.find(slot=>slot.id===id);
+export function occupancy(appointments){
+ const taken=Object.fromEntries(SLOTS.map(slot=>[slot.id,0]));
+ for(const appointment of appointments||[]){
+  if(appointment.state==='cancelled'||!String(appointment.attributes?.notes||'').startsWith(MARK))continue;
+  const at=new Date(appointment.attributes?.time).getTime();
+  const slot=SLOTS.find(item=>new Date(item.time).getTime()===at);if(slot)taken[slot.id]++;
+ }
+ return SLOTS.map(slot=>({id:slot.id,label:slot.label,remaining:Math.max(CAPACITY-taken[slot.id],0)}));
+}
+const dayAppointments='/records/Appointment?time_after=2026-12-04&time_before=2026-12-06&limit=500';
+function crm(inputs,request,track=()=>{}){
+ return async(method,path,data,idempotency)=>{
+  track(method+' '+path.split('?')[0]);
+  const body=data?JSON.stringify(data):undefined;
+  const response=await request('http://fs:3000/api/v1/automation'+path,{method,signal:AbortSignal.timeout(8000),headers:{
+   Host:'pilates-luma-vitae.perfectflow.cloud','X-Forwarded-Host':'pilates-luma-vitae.perfectflow.cloud','X-Forwarded-Proto':'https','Content-Type':'application/json',
+   Authorization:'Basic '+Buffer.from('activepieces:'+inputs.apiToken).toString('base64'),...(idempotency?{'Idempotency-Key':idempotency}:{})},body});
+  if(!response.ok)throw new Error('CRM request failed '+response.status);return response.json();
+ };
+}
 const experiences=['No, nunca.','Sí, alguna vez.','Sí, actualmente.'];
 const sources=['Instagram','Tiktok','TikTok','Recomendación','Otro'];
 export function validate(payload,now=new Date()){
@@ -31,11 +61,11 @@ export function validate(payload,now=new Date()){
  const text=(key,max)=>typeof payload[key]==='string'&&payload[key].trim().length<=max?payload[key].trim():'';
  const form={name:text('nombre',160),email:text('correo',254).toLowerCase(),phone:text('whatsapp',20),
   birth:text('fecha_nacimiento',10),experience:text('experiencia_pilates',80),notes:text('notas',3000),source:text('como_supiste_del_evento',80),
-  terms:text('terminos_version',20),confirmation:yes(payload.confirmacion),accepted:yes(payload.terminos)};
+  terms:text('terminos_version',20),confirmation:yes(payload.confirmacion),accepted:yes(payload.terminos),slot:text('horario',5)};
  const date=new Date(form.birth+'T12:00:00Z');
  if(!form.name||!/^\S+@\S+\.\S+$/.test(form.email)||!/^\+[1-9]\d{6,14}$/.test(form.phone)||
   !/^\d{4}-\d{2}-\d{2}$/.test(form.birth)||!Number.isFinite(date.getTime())||date.toISOString().slice(0,10)!==form.birth||form.birth>now.toISOString().slice(0,10)||
-  !experiences.includes(form.experience)||!sources.includes(form.source)||!form.confirmation||!form.accepted||form.terms!=='2026-10-13')return null;
+  !experiences.includes(form.experience)||!sources.includes(form.source)||!form.confirmation||!form.accepted||form.terms!=='2026-10-13'||!slotOf(form.slot))return null;
  return form;
 }
 export function makeHandler({state=redis,request=fetch,now=()=>new Date()}={}){
@@ -47,42 +77,52 @@ export function makeHandler({state=redis,request=fetch,now=()=>new Date()}={}){
   if(payload?.action==='status'){
    if(!inputs.apiToken)return reply(503,'El registro todavía no está disponible.');
    try{
-    const response=await request('http://fs:3000/api/v1/automation/records/Entity?model=evento&event_code=pilates-mon-2026&limit=2',{
-     method:'GET',signal:AbortSignal.timeout(8000),headers:{Host:'pilates-luma-vitae.perfectflow.cloud','X-Forwarded-Host':'pilates-luma-vitae.perfectflow.cloud','X-Forwarded-Proto':'https',Authorization:'Basic '+Buffer.from('activepieces:'+inputs.apiToken).toString('base64')}});
-    if(!response.ok)throw new Error('CRM unavailable');
-    const result=await response.json();if(result.records?.length!==1)throw new Error('Event missing');
+    const call=crm(inputs,request);
+    const result=await call('GET','/records/Entity?model=evento&event_code=pilates-mon-2026&limit=2');
+    if(result.records?.length!==1)throw new Error('Event missing');
     const open=[true,'true','1'].includes(result.records[0].custom_fields?.registro_abierto);
-    return reply(200,open?'Completa tus datos para registrarte.':'El registro abrirá pronto.',{registration_open:open});
+    if(!open)return reply(200,'El registro abrirá pronto.',{registration_open:false});
+    const slots=occupancy((await call('GET',dayAppointments)).records);
+    const full=slots.every(slot=>slot.remaining===0);
+    return reply(200,full?'Todos los horarios están completos. Escríbenos por WhatsApp para la lista de espera.':'Elige tu horario y completa tus datos.',{registration_open:!full,slots});
    }catch{return reply(503,'No pudimos consultar el registro. Intenta de nuevo.');}
   }
   if(payload?.website)return reply(200,'Recibimos tu registro.');
   const form=validate(payload,now());
-  if(!form)return reply(422,'Completa tus datos, revisa las respuestas y acepta las políticas y los términos.');
+  if(!form)return reply(422,'Completa tus datos, elige un horario, revisa las respuestas y acepta las políticas y los términos.');
   if(!inputs.apiToken)return reply(503,'El registro todavía no está disponible. Escríbenos por WhatsApp.');
   const eventCode='pilates-mon-2026';
   const key=digest(eventCode+':'+form.email),owner=crypto.randomUUID();
-  const locks=[prefix+'email:'+digest(form.email),prefix+'phone:'+digest(form.phone)].sort();
+  // El lock del horario va con los demás: dos personas no pueden tomar el último cupo a la vez.
+  const locks=[prefix+'email:'+digest(form.email),prefix+'phone:'+digest(form.phone),prefix+'slot:'+form.slot].sort();
   const held=[];let stage='locks';
   try{
    for(const lock of locks){if(!await state('SET',lock,owner,'NX','EX',180))return reply(503,'Estamos procesando tu registro. Intenta de nuevo en unos segundos.');held.push(lock);}
-   const call=async(method,path,data,idempotency)=>{
-    stage=method+' '+path.split('?')[0];
-    const body=data?JSON.stringify(data):undefined;
-    const response=await request('http://fs:3000/api/v1/automation'+path,{method,signal:AbortSignal.timeout(8000),headers:{
-     Host:'pilates-luma-vitae.perfectflow.cloud','X-Forwarded-Host':'pilates-luma-vitae.perfectflow.cloud','X-Forwarded-Proto':'https','Content-Type':'application/json',
-     Authorization:'Basic '+Buffer.from('activepieces:'+inputs.apiToken).toString('base64'),...(idempotency?{'Idempotency-Key':idempotency}:{})},body});
-    if(!response.ok)throw new Error('CRM request failed '+response.status);return response.json();
-   };
+   const call=crm(inputs,request,value=>{stage=value;});
+   const slot=slotOf(form.slot);
+   const book=student=>call('POST','/records/Appointment',{record:{time:slot.time,duration_minutes:DURATION,
+    notes:MARK+' · '+slot.label+' · '+form.name+' · '+form.email+' · pendiente de pago',subject_links:{[STUDENT_RELATION]:[student]}}},'pilates-mon-appointment-'+key+'-'+slot.id);
+   const hasBooking=(appointments,student)=>(appointments||[]).some(item=>item.state!=='cancelled'&&String(item.attributes?.notes||'').startsWith(MARK)&&linked(item,STUDENT_RELATION,student));
    const events=await call('GET','/records/Entity?model=evento&event_code='+eventCode+'&limit=2');
    if(events.records?.length!==1)return reply(503,'El registro todavía no está disponible.');
    const event=events.records[0],settings=event.custom_fields||{};
    if(![true,'true','1'].includes(settings.registro_abierto))return reply(503,'El registro abrirá pronto. Escríbenos por WhatsApp si necesitas ayuda.');
    const existing=await call('GET','/records/Entity?model=inscripcion_evento&registration_key='+key+'&limit=2');
    const bookingURL=safeBookingURL(settings.booking_url);
+   const appointments=(await call('GET',dayAppointments)).records;
    if(existing.records?.length){
     if(existing.records.length!==1||!linked(existing.records[0],'inscripcion_evento',event.id)||!existing.records[0].relations?.inscripcion_alumna?.records?.length)throw new Error('Registration needs review');
-    return reply(200,'Tu registro ya está guardado.',{booking_url:bookingURL});
+    const studentId=existing.records[0].relations.inscripcion_alumna.records[0].id;
+    // Un reintento después de que la cita no se pudo crear la crea ahora, en el horario que eligió.
+    const saved=slotOf(existing.records[0].custom_fields?.horario)||slot;
+    if(!hasBooking(appointments,studentId)){
+     if(occupancy(appointments).find(item=>item.id===saved.id).remaining<1)return reply(409,'Ese horario se completó. Escríbenos por WhatsApp y te ayudamos a cambiarlo.',{slots:occupancy(appointments)});
+     await call('POST','/records/Appointment',{record:{time:saved.time,duration_minutes:DURATION,
+      notes:MARK+' · '+saved.label+' · '+form.name+' · '+form.email+' · pendiente de pago',subject_links:{[STUDENT_RELATION]:[studentId]}}},'pilates-mon-appointment-'+key+'-'+saved.id);
+    }
+    return reply(200,'Tu registro ya está guardado.',{booking_url:bookingURL,slot:saved.label});
    }
+   if(occupancy(appointments).find(item=>item.id===slot.id).remaining<1)return reply(409,'Ese horario se acaba de completar. Elige otro.',{slots:occupancy(appointments)});
    if(await state('EVAL',rate,1,prefix+'rate:'+digest(form.email))>10)return reply(429,'Has realizado varios intentos. Intenta más tarde o escríbenos por WhatsApp.');
    let student=null,phoneConflict=false,after=0,finished=false;
    for(let page=0;page<10;page++){
@@ -102,9 +142,10 @@ export function makeHandler({state=redis,request=fetch,now=()=>new Date()}={}){
    const registration=await call('POST','/records/Entity?model=inscripcion_evento',{record:{full_name:form.name,email:form.email,phone:form.phone,subject_links:{inscripcion_alumna:student.id,inscripcion_evento:event.id},custom_fields:{
     event_code:eventCode,email_participante:form.email,fecha_nacimiento:form.birth,experiencia_pilates:form.experience,
     a_considerar:form.notes,como_supiste:form.source,acepta_politicas:true,acepta_terminos:true,terminos_version:form.terms,
-    registrado_en:now().toISOString(),origen:'landing:pilates-mon',registration_key:key}}},'pilates-mon-registration-'+key);
+    registrado_en:now().toISOString(),origen:'landing:pilates-mon',registration_key:key,horario:slot.id}}},'pilates-mon-registration-'+key);
    if(registration.custom_fields?.registration_key!==key||!linked(registration,'inscripcion_alumna',student.id)||!linked(registration,'inscripcion_evento',event.id))throw new Error('Registration not linked');
-   return reply(200,'Recibimos tu registro.',{booking_url:bookingURL});
+   await book(student.id);
+   return reply(200,'Recibimos tu registro.',{booking_url:bookingURL,slot:slot.label});
   }catch(error){return {...reply(503,'No pudimos guardar tu registro. Intenta de nuevo o escríbenos por WhatsApp.'),diagnostic:{stage,reason:error.message}};}
   finally {for(const lock of held){try{await state('EVAL',release,1,lock,owner);}catch{/* Locks expire even when state is unavailable. */}}}
  };

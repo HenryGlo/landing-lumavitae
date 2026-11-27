@@ -182,6 +182,13 @@
 
     /* ─── OPCIONES ─── */
     .opts { display: grid; gap: 0.5rem; }
+    .event { margin: 0 auto 1.6rem; max-width: 52ch; text-align: center; color: var(--text-stone); }
+    .event p { margin: 0 0 0.85rem; }
+    .event ul { list-style: none; padding: 0; margin: 0 0 0.85rem; }
+    .event li { margin: 0.2rem 0; }
+    .event .facts { display: grid; gap: 0.25rem; color: var(--text-dark); }
+    .opt.full { opacity: 0.45; pointer-events: none; }
+    .opt .left { margin-left: auto; font-size: 0.85rem; color: var(--text-stone); white-space: nowrap; }
     .opts.two { grid-template-columns: 1fr 1fr; }
     @media (max-width: 560px) { .opts.two { grid-template-columns: 1fr; } }
 
@@ -347,14 +354,26 @@
 <div class="wrap">
 <header class="head">
 <a href="index.html" class="brand" aria-label="Lumavitae · página principal"><img src="images/brand/wordmark.svg" alt="Lumavitae" width="1000" height="249"></a>
-<p class="kicker">pilates mon</p>
+<p class="kicker">pilates mom</p>
 <h1>Un momento para ti</h1>
-<p class="intro">Completa tus datos para participar en Pilates Mon. Queremos conocerte y acompañarte durante tu experiencia.</p>
+<p class="intro">Un espacio creado para consentirla (o consentirte) como se merece 🤍✨</p>
 </header>
+<section class="event" aria-label="Sobre Pilates Mom">
+<p>Prepárate para vivir un día de conexión, equilibrio y sorpresas en nuestro Pilates Mom.🥂</p>
+<p><strong>Lo que incluye la experiencia:</strong></p>
+<ul><li>Sesión especial de pilates y meditación 🧘‍♀️</li><li>Mimosas y snacks saludables 🍓🥑</li><li>Regalos especiales 🎁</li></ul>
+<div class="facts"><span>📅 Sábado 05 de diciembre</span><span>⏱️ Duración: 1 h 20 min (clase y compartir)</span><span>💲 Inversión: $30 por persona + 7 % ITBMS</span><span>⚠️ Cupos limitados: 5 personas por horario</span></div>
+</section>
 <p id="registration-status" class="intro" role="status">Consultando el registro…</p><button type="button" id="registration-retry" class="retry" data-action="retry-registration" hidden>intentar de nuevo</button>
 <div class="card"><form id="form" novalidate>
 <section class="step">
-        <div class="step-head"><span class="step-n">1</span><h2>Tus datos</h2></div>
+        <div class="step-head"><span class="step-n">1</span><h2>Tu horario</h2></div>
+        <fieldset class="field" data-field="horario">
+          <legend class="q">Sábado 05 de diciembre · elige tu hora <span class="req">*</span></legend>
+          <div class="opts" id="slots"><p class="note">Cargando horarios…</p></div>
+        </fieldset>
+      </section><section class="step">
+        <div class="step-head"><span class="step-n">2</span><h2>Tus datos</h2></div>
 
         <div class="field" data-field="nombre">
           <label class="q" for="nombre">Nombre completo <span class="req">*</span></label>
@@ -393,7 +412,7 @@
           </span>
         </div>
       </section><section class="step">
-        <div class="step-head"><span class="step-n">2</span><h2>Tu experiencia</h2></div>
+        <div class="step-head"><span class="step-n">3</span><h2>Tu experiencia</h2></div>
 
         <fieldset class="field" data-field="experiencia">
           <legend class="q">&iquest;Has practicado Pilates anteriormente? <span class="req">*</span></legend>
@@ -403,7 +422,7 @@
             <label class="opt"><input type="radio" name="experiencia" value="S&iacute;, actualmente."><span class="mark"></span><span class="txt">S&iacute;, actualmente.</span></label>
           </div>
         </fieldset>
-      </section><section class="step"><div class="step-head"><span class="step-n">3</span><h2>Antes de encontrarnos</h2></div><div class="field" data-field="notas">
+      </section><section class="step"><div class="step-head"><span class="step-n">4</span><h2>Antes de encontrarnos</h2></div><div class="field" data-field="notas">
           <label class="q" for="notas">&iquest;Hay algo que consideres importante que sepamos para acompa&ntilde;arte durante tus clases?<span class="hint">Lesiones, embarazo, cirug&iacute;as&hellip; lo que quieras contarnos. Opcional.</span></label>
           <textarea id="notas" name="notas" maxlength="3000" style="resize:none;min-height:108px" placeholder="Escr&iacute;belo aqu&iacute; con confianza."></textarea>
         </div><fieldset class="field" data-field="conociste">
@@ -428,9 +447,9 @@
 <div class="hp" aria-hidden="true"><label>No rellenar<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
 <div class="foot"><button type="submit" class="send" id="send" disabled><span id="sendtxt">enviar mi registro</span></button>
 <p class="sendmsg" id="sendmsg" role="alert" hidden></p>
-<p class="note">El registro no confirma un cupo ni un pago. Te indicaremos cómo reservar tu horario.</p></div></form>
-<div class="done" id="done" hidden tabindex="-1"><h2>¡Recibimos tu registro!</h2><p id="done-text">Gracias por compartir tus datos. Te contactaremos para coordinar tu participación en Pilates Mon.</p>
-<a class="wa" id="booking-link" hidden>elegir mi horario</a>
+<p class="note">Al enviar apartamos tu lugar en el horario elegido. Queda confirmado cuando recibamos tu pago.</p></div></form>
+<div class="done" id="done" hidden tabindex="-1"><h2>¡Apartamos tu lugar!</h2><p id="done-text">Gracias por registrarte en Pilates Mom. Tu lugar queda confirmado cuando recibamos tu pago.</p>
+<a class="wa" id="booking-link" hidden>pagar mi lugar</a>
 <a class="home" href="index.html">ir a la página principal</a></div></div>
 <p class="legal">Lumavitae · Pilates Studio · Panamá</p></div>
 <script src="pilates-mon.js" defer></script></body></html>
